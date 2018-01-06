@@ -1,0 +1,35 @@
+<div class="section no-pad-bot">
+  <div class="container row">
+    <h5 style="text-align: center">Add a Review</h5>
+
+    <form class="col s12" action="/reviews/create" method="POST">
+      <div class="row">
+
+        <div class="input-field col s12">
+          <label for="name">Name</label>
+          <input class="autocomplete validate" type="text" name="name"
+	    id="name"
+	    placeholder="Canonet">
+        </div>
+
+        <div class="input-field col s12">
+          <label for="image">Image Url</label>
+          <input class="validate" type="text" name="imageUrl" id="image" placeholder="https://imagescom/..." required>
+        </div>
+
+        <div class="input-field col s12">
+          <label for="description">Description</label>
+          <textarea class="materialize-textarea validate" type="text" name="description"
+		  id="description" placeholder="Sweet cam."></textarea>
+        </div>
+
+	<div class="input-field col s12">
+          <button class="waves-effect waves-light btn red lighten-2" type="submit">Submit!
+            <i class="material-icons right">send</i>
+	  </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

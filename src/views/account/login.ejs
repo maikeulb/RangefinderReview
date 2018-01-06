@@ -1,0 +1,39 @@
+<div class="section no-pad-bot">
+  <div class="container row">
+    <h5 style="text-align: center">Login</h5>
+
+    <form action="/account/login" method="POST">
+      <div class="input-field col s12">
+        <label for="email">Email</label>
+        <input class="autocomplete validate" type="email" name="email"
+          id="email"
+          placeholder="john.doe@gmail.com">
+      </div>
+
+      <div class="input-field col s12">
+        <label for="password">Password</label>
+        <input class="autocomplete validate" type="password" name="password"
+          id="password"
+          placeholder="john.doe@gmail.com">
+      </div>
+
+      <div class="input-field col s12">
+         <button class="waves-effect waves-light btn red lighten-2" type="submit">
+           Login
+         </button>
+         <a class="waves-effect waves-light btn-flat" href="/account/forgot">Forgot your password?</a>
+      </div>
+
+      <div class="input-field col s12">
+        <a class="waves-effect waves-light btn social google" style="background-color: #dd4b39" href="/account/google">
+         <i class="fa fa-google"></i> Sign in with Google
+        </a>
+        <a class="waves-effect waves-light btn social github"
+		style="background-color: #333" href="/account/github">
+          <i class="fa fa-github"></i> Sign in with Github 
+        </a>
+      </div>
+    </form>
+
+  </div>
+</div>

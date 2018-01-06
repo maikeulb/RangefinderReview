@@ -1,0 +1,33 @@
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+    <h5 style="text-align: center">Reviews Archive</h5>
+	<p>Our archive of 35mm rangefinder reviews is listed below. You will
+find reviews of some of the best 35mm rangefinders cameras from brands such as
+Leica, Nikon, Canon, and more. Interested in contributing? Add a review 
+	<a href="/reviews/create">here!</a></p>
+
+      <div class="row" id="rangefinders-grid">
+        <% reviews.forEach(function(review){ %>
+          <div class="col s12 m6 l3">
+            <div class="card">
+              <div class="card-image">
+                <img src="<%= review.imageUrl %>">
+              </div>
+	      <div class="card-content" 
+		style="padding:4px; padding-left:24px;">
+
+	        <span class="card-title" 
+		  style="margin:0; font-size:18px; text-transform: uppercase; font-weight:400;"> 
+		<%=review.name%>  
+		</span>
+              </div>
+              <div class="card-action">
+                <a href="/reviews/<%= review._id %>">Read Review</a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+
+    </div>
+  </div>

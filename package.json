@@ -1,0 +1,53 @@
+{
+  "name": "nest-typescript-starter",
+  "version": "1.0.0",
+  "description": "Nest TypeScript starter repository",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run start:watch",
+    "start:watch": "nodemon",
+    "prestart:prod": "tsc",
+    "start:prod": "node dist/server.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^4.5.2",
+    "@nestjs/core": "^4.5.2",
+    "@nestjs/microservices": "^4.5.2",
+    "@nestjs/mongoose": "^1.0.2",
+    "@nestjs/testing": "^4.5.2",
+    "@nestjs/websockets": "^4.5.2",
+    "@types/bcrypt-nodejs": "0.0.30",
+    "@types/bluebird": "^3.5.19",
+    "@types/passport-local": "^1.0.32",
+    "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.5.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.7",
+    "express-ejs-layouts": "^2.3.1",
+    "express-session": "^1.15.6",
+    "materialize-social": "^1.0.3",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.0.0-rc0",
+    "passport": "^0.4.0",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.4.0",
+    "redis": "^2.7.1",
+    "reflect-metadata": "^0.1.10",
+    "request": "^2.83.0",
+    "rxjs": "^5.5.6",
+    "typescript": "^2.5.2"
+  },
+  "devDependencies": {
+    "@types/express-session": "^1.15.6",
+    "@types/mongoose": "^4.7.31",
+    "@types/node": "^8.0.28",
+    "@types/passport": "^0.4.2",
+    "@types/passport-github": "^1.1.2",
+    "@types/passport-google-oauth": "^1.0.37",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0"
+  }
+}

@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-3">
+    <p class="lead">Rangefinder Review</p>
+    <div class="list-group">
+      <li class="list-group-item active">Info 1</li>
+      <li class="list-group-item">Info 2</li>
+      <li class="list-group-item">Info 3</li>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="thumbnail">
+      <img class="img-responsive" src="<%= review.image %>">
+      <div class="caption-full">
+        <h4><a><%=review.name%></a></h4>
+        <p><%= review.description %></p>
+      </div>
+    </div>
+    <div class="well">
+      <div class="text-right">
+        <a class="btn btn-success" href="/reviews/<%= review._id %>"> Add New Comment</a>
+      </div>
+      <hr>
+      </div>
+    </div>
+
+        <% if(user){ %>
+        <a href="/reviews/edit/<%=review._id%>" class="btn btn-xs btn-warning">EDIT</a>
+	<form action="/reviews/delete/<%= review._id %>" method="POST">
+          <button class="btn btn-danger">DELETE</button>
+        </form>
+        <% } %>
+
+
+  </div>
+</div>

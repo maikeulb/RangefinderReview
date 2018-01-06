@@ -1,0 +1,35 @@
+<div class="section no-pad-bot">
+  <div class="container row">
+    <h5 style="text-align: center">Register</h5>
+
+    <form action="/account/register" method="POST">
+      <div class="input-field col s12">
+        <label for="email">Email</label>
+        <input class="autocomplete validate" type="email" name="email"
+          id="email"
+          placeholder="john.doe@gmail.com">
+      </div>
+
+      <div class="input-field col s12">
+        <label for="password">Password</label>
+        <input class="autocomplete validate" type="password" name="password"
+          id="password"
+	  placeholder="Password">
+      </div>
+
+      <div class="input-field col s12">
+        <label for="confirmPassword">Confirm Password</label>
+        <input class="autocomplete validate" type="password" name="confirmPassword"
+          id="confirmPassword"
+	  placeholder="Password">
+      </div>
+
+      <div class="input-field col s12">
+        <button class="waves-effect waves-light btn red lighten-2" type="submit">Submit!
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
