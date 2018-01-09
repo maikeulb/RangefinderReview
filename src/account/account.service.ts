@@ -26,16 +26,4 @@ export class AccountService {
     }
   }
 
-  async register(user: IUserModel): Promise<void> {
-
-    // try {
-    //   const existingUser: IUserModel  = await this.findByEmail(user.email);
-    //   if (!existingUser) { user.save(); return Promise.resolve(); }
-    //   if (existingUser) { return Promise.reject('User exits'); }
-    // } catch (err) {
-    //   console.log('there was a problem registering');
-    // }
-
-  }
-
 }

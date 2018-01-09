@@ -43,6 +43,5 @@ export class LocalLoginStrategy extends Strategy {
         return done ('invalid password', false);
       }
       return done(null, user);
-
   }
 }

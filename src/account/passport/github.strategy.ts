@@ -37,14 +37,15 @@ export class GithubStrategy extends Strategy {
   async logIn(profile, accessToken, done) {
     try {
       const existUser: IUserModel = await this.accountService.findById(profile.id);
-      if (existUser) { return done(null, existUser); }
+      if (existUser) { 
+        return done(null, existUser); 
+      }
       if (!existUser) {
       const newUser: IUserModel = new User ({
         displayName: profile.displayName,
-        email: profile.emails[0].value,
         githubAccount: {
-          googleId: profile.id,
-          googleToken: accessToken,
+          githubId: profile.id,
+          githubToken: accessToken,
         },
       });
       newUser.save();

@@ -37,9 +37,17 @@ export class AccountModule implements NestModule {
       // google CallBack URL
       .apply(passport.authenticate('google', {
         successRedirect: '/',
-        failureRedirect: '/error'
+        failureRedirect: '/error',
       }))
       .forRoutes({ path: '/account/google/callback', method: RequestMethod.GET })
+
+      // google CallBack URL
+      .apply(passport.authorize('google', {
+        successRedirect: '/',
+        failureRedirect: '/error',
+      }))
+      .forRoutes({ path: '/account/google/callback', method: RequestMethod.GET })
+
        // github login
       .apply(passport.authenticate('github', {
           scope: ['email'],
@@ -65,5 +73,6 @@ export class AccountModule implements NestModule {
         failureRedirect: '/error',
       }))
       .forRoutes({ path: '/account/register', method: RequestMethod.POST });
+
   }
 }

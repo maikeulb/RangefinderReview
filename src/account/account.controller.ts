@@ -6,6 +6,7 @@ import { AccountService } from './account.service';
 export class AccountController {
   constructor(private readonly accountService: AccountService) { }
 
+  // local
   @Get('login')
   getLogin( @Req() req, @Res() res ) {
     res.render('account/login', {
@@ -21,13 +22,6 @@ export class AccountController {
     res.redirect(req.session.returnTo || '/');
   }
 
-  @Get('profile')
-  getProfile( @Req() req, @Res() res) {
-    res.render('account/profile', {
-      user: req.user,
-    });
-  }
-
   @Get('register')
   getRegister( @Req() req, @Res() res ) {
     res.render('account/register', {
@@ -38,26 +32,14 @@ export class AccountController {
   @Post('register')
   async postRegister( @Req() req, @Res() res ) {}
 
-    // const user: IUserModel = new User({
-    //   email: req.body.email,
-    //   password: req.body.password,
-    // });
-
-    // try {
-    //   await this.accountService.register(user);
-    //   req.logIn(user, (err) => {res.redirect('/account/profile'); });
-    // } catch (err) {
-    //   res.redirect('/signup');
-    //   console.log('there was a problem registering');
-    // }
-  // }
-
+  // google
   @Get('google/callback')
   async googleCallback() {}
 
   @Get('google')
   async googleSignIn() {}
 
+  // github
   @Get('github')
   async githubSignIn() {}
 
@@ -68,6 +50,13 @@ export class AccountController {
   logout( @Req() req, @Res() res) {
     req.logout();
     res.redirect('/');
+  }
+
+  @Get('profile')
+  getProfile( @Req() req, @Res() res) {
+    res.render('account/profile', {
+      user: req.user,
+    });
   }
 
 }
