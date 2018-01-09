@@ -6,19 +6,20 @@ import { Strategy } from 'passport-local';
 import { AccountService } from '../account.service';
 
 @Component()
-export class LocalStrategy extends Strategy {
+export class LocalRegisterStrategy extends Strategy {
   constructor(private readonly accountService: AccountService) {
     super({
       usernameField: 'email',
       passwordField: 'password',
-    }, async (email, password, done) =>
-      await this.logIn(email, password, done),
+    },
+      async (email, password, done) =>
+      await this.register(email, password, done),
     );
 
-    passport.use(this);
+    passport.use('local-register', this);
 
-    passport.serializeUser((user, done) => {
-      done(null, user);
+    passport.serializeUser((user:any, done) => {
+      done(null, user.id);
     });
 
     passport.deserializeUser((id, done) => {
@@ -29,17 +30,24 @@ export class LocalStrategy extends Strategy {
 
   }
 
-  async logIn(email, password, done) {
+  async register(email, password, done) {
     try {
       const user: IUserModel = await this.accountService.findByEmail(email);
-      if (!user) { return done('invalid username', false); }
+      if (!user) {
 
-      const isMatch: boolean = await user.comparePassword(password);
-      if (!isMatch) { return done ('invalid password', false) ; }
-      return done(null, user);
+        const newUser: IUserModel = new User({
+          email: email,
+          password: password,
+        });
 
+        newUser.save();
+        return done(null, newUser);
+      }
+      if (user) {
+       return done ('user exists', false);
+      }
     } catch (err) {
-      done('there was a problem logging in', false );
+      done('there was a problem logging in from local-register', false );
     }
   }
 }

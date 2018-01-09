@@ -7,7 +7,8 @@ import {
 import { AccountController } from './account.controller';
 import { GoogleStrategy } from './passport/google.strategy';
 import { GithubStrategy } from './passport/github.strategy';
-import { LocalStrategy } from './passport/local.strategy';
+import { LocalLoginStrategy } from './passport/localLogin.strategy';
+import { LocalRegisterStrategy } from './passport/localRegister.strategy';
 import { SecretKey } from './passport/secretKeys';
 import { AccountService } from './account.service';
 import * as passport from 'passport';
@@ -17,7 +18,8 @@ import * as passport from 'passport';
   components: [
     GoogleStrategy,
     GithubStrategy,
-    LocalStrategy,
+    LocalLoginStrategy,
+    LocalRegisterStrategy,
     SecretKey,
     AccountService,
   ],
@@ -50,11 +52,18 @@ export class AccountModule implements NestModule {
       }))
       .forRoutes({ path: '/account/github/callback', method: RequestMethod.ALL })
 
-       // local login
-      .apply(passport.authenticate('local', {
+       // local login-login
+      .apply(passport.authenticate('local-login', {
         successRedirect: '/account/callback',
         failureRedirect: '/error',
       }))
-      .forRoutes({ path: '/account/login', method: RequestMethod.POST });
+      .forRoutes({ path: '/account/login', method: RequestMethod.POST })
+
+       // local login-register
+      .apply(passport.authenticate('local-register', {
+        successRedirect: '/account/profile',
+        failureRedirect: '/error',
+      }))
+      .forRoutes({ path: '/account/register', method: RequestMethod.POST });
   }
 }

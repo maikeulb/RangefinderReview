@@ -6,19 +6,20 @@ import { Strategy } from 'passport-local';
 import { AccountService } from '../account.service';
 
 @Component()
-export class LocalStrategy extends Strategy {
+export class LocalLoginStrategy extends Strategy {
   constructor(private readonly accountService: AccountService) {
     super({
       usernameField: 'email',
       passwordField: 'password',
-    }, async (email, password, done) =>
+    }, 
+      async (email, password, done) =>
       await this.logIn(email, password, done),
     );
 
-    passport.use(this);
+    passport.use('local-login', this);
 
-    passport.serializeUser((user, done) => {
-      done(null, user);
+    passport.serializeUser((user: any, done) => {
+      done(null, user.id);
     });
 
     passport.deserializeUser((id, done) => {
@@ -30,16 +31,18 @@ export class LocalStrategy extends Strategy {
   }
 
   async logIn(email, password, done) {
-    try {
       const user: IUserModel = await this.accountService.findByEmail(email);
-      if (!user) { return done('invalid username', false); }
+      console.log(user)
+      if (!user) {
+        return done('invalid username', false);
+      }
 
       const isMatch: boolean = await user.comparePassword(password);
-      if (!isMatch) { return done ('invalid password', false) ; }
+      console.log(isMatch)
+      if (!isMatch) {
+        return done ('invalid password', false);
+      }
       return done(null, user);
 
-    } catch (err) {
-      done('there was a problem logging in', false );
-    }
   }
 }

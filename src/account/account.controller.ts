@@ -36,21 +36,21 @@ export class AccountController {
   }
 
   @Post('register')
-  async postRegister( @Req() req, @Res() res ) {
+  async postRegister( @Req() req, @Res() res ) {}
 
-    const user: IUserModel = new User({
-      email: req.body.email,
-      password: req.body.password,
-    });
+    // const user: IUserModel = new User({
+    //   email: req.body.email,
+    //   password: req.body.password,
+    // });
 
-    try {
-      await this.accountService.register(user);
-      req.logIn(user, (err) => {res.redirect('/account/profile'); });
-    } catch (err) {
-      res.redirect('/signup');
-      console.log('there was a problem registering');
-    }
-  }
+    // try {
+    //   await this.accountService.register(user);
+    //   req.logIn(user, (err) => {res.redirect('/account/profile'); });
+    // } catch (err) {
+    //   res.redirect('/signup');
+    //   console.log('there was a problem registering');
+    // }
+  // }
 
   @Get('google/callback')
   async googleCallback() {}

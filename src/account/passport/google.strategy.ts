@@ -21,8 +21,8 @@ export class GoogleStrategy extends OAuth2Strategy {
 
     passport.use(this);
 
-    passport.serializeUser((user, done) => {
-      done(null, user);
+    passport.serializeUser((user: any, done) => {
+      done(null, user.id);
     });
 
     passport.deserializeUser((id, done) => {
