@@ -7,6 +7,7 @@ const bcryptAsync: any = Promise.promisifyAll(bcrypt);
 
 export interface IUserModel extends IUser, Document {
   comparePassword?: (candidatePassword: string) => boolean;
+  generateHash?: (password: string) => string;
   gravatar?: (size: number) => string;
 }
 
@@ -22,22 +23,26 @@ const userSchema = new Schema({
 
 }, { timestamps: true });
 
-// userSchema.pre('save', function save(next) {
-//   const user = this;
-//   if (!user.isModified('password')) { return next(); }
-//   bcrypt.genSalt(10, (err, salt) => {
-//     if (err) { return next(err); }
-//     bcrypt.hash(user.password, salt, undefined, (err: Error, hash) => {
-//       if (err) { return next(err); }
-//       user.password = hash;
-//       next();
-//     });
-//   });
-// });
-
-// userSchema.methods.generateHash = function(password) {
-//     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+// userSchema.statics.generateHash = function(password) {
+//     return bcrypt.hash(password, bcrypt.genSaltSync(8), null);
 // };
+
+/**
+ * Password hash middleware.
+ */
+
+userSchema.pre('save', function save(next) {
+  const user = this;
+  if (!user.isModified('password')) { return next(); }
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) { return next(err); }
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
+      if (err) { return next(err); }
+      user.password = hash;
+      next();
+    });
+  });
+});
 
 userSchema.methods.comparePassword = function(candidatePassword: string) {
   try {
