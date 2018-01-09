@@ -61,7 +61,7 @@ export class AccountModule implements NestModule {
 
        // local login-register
       .apply(passport.authenticate('local-register', {
-        successRedirect: '/account/profile',
+        successRedirect: '/',
         failureRedirect: '/error',
       }))
       .forRoutes({ path: '/account/register', method: RequestMethod.POST });
