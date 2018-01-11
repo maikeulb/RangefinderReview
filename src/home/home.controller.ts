@@ -8,7 +8,6 @@ export class HomeController {
   getIndexPage( @Res() res) {
     res.render('index');
   }
-
 }
 
 @Controller('error')
@@ -21,5 +20,4 @@ export class ErrorController {
       title: 'Error Page'
   });
   }
-
 }

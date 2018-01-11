@@ -1,5 +1,5 @@
 import { Component, Inject } from '@nestjs/common';
-import { User, IUserModel } from '../schemas/user.schema';
+import { User, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
@@ -31,7 +31,7 @@ export class LocalLoginStrategy extends Strategy {
   }
 
   async logIn(email, password, done) {
-      const user: IUserModel = await this.accountService.findByEmail(email);
+      const user: UserModel = await this.accountService.findByEmail(email);
       console.log(user)
       if (!user) {
         return done('invalid username', false);

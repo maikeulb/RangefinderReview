@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Res, Req, Next } from '@nestjs/common';
-import { User, IUserModel } from './schemas/user.schema';
+import { User, UserModel } from './schemas/user.schema';
 import { AccountService } from './account.service';
 
 @Controller('account')

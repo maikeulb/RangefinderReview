@@ -1,6 +1,6 @@
 import { Component } from '@nestjs/common';
 import { SecretKey } from './secretKeys';
-import { User, IUserModel } from '../schemas/user.schema';
+import { User, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-github';
@@ -36,12 +36,12 @@ export class GithubStrategy extends Strategy {
 
   async logIn(profile, accessToken, done) {
     try {
-      const existUser: IUserModel = await this.accountService.findById(profile.id);
+      const existUser: UserModel = await this.accountService.findById(profile.id);
       if (existUser) { 
         return done(null, existUser); 
       }
       if (!existUser) {
-      const newUser: IUserModel = new User ({
+      const newUser: UserModel = new User ({
         displayName: profile.displayName,
         githubAccount: {
           githubId: profile.id,

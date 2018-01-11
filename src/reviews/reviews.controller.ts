@@ -1,65 +1,68 @@
 import { Controller, Get, Post, Put, Body, Delete, Req, Res, Param } from '@nestjs/common';
-import { Review } from './interfaces/review.interface';
-import { CreateReviewViewModel } from './viewmodels/createReview.viewmodel';
-import { EditReviewViewModel } from './viewmodels/editReview.viewmodel';
-import { ReviewsService } from './reviews.service';
+// import { Review } from '../models/interfaces/review.interface';
+import { Review } from '../models/schemas/review.schema';
+import { CreateReviewCommand} from './commands/createReview.command';
+import { EditReviewCommand} from './commands/editReview.command';
+import { ReviewsService } from '../data/repositories/reviews.service';
 
-@Controller('Reviews')
+@Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get('/')
-  async findAll(@Req() req, @Res() res, err): Promise<Review[]> {
-    const foundReviews = await this.reviewsService.findAll();
-    return res.render('reviews/index', { reviews: foundReviews }
-    );
+  async getIndex(@Req() req, @Res() res, err): Promise<Review[]> {
+    const retrievedReviews = await this.reviewsService.findAll();
+    return res.render('reviews/index', { 
+      reviews: retrievedReviews 
+    });
   }
 
   @Get('/create')
-  getCreate(@Req() req, @Res() res, err) {
+  getCreateReview(@Req() req, @Res() res, err) {
     return res.render("reviews/create");
   }
 
   @Post('/create')
-  async createReview(@Res() res, @Body() createReviewViewModel: CreateReviewViewModel) {
+  async createReview(@Res() res, @Body() createReviewCommand: CreateReviewCommand) {
     try {
-      await this.reviewsService.create(createReviewViewModel);
+      await this.reviewsService.create(createReviewCommand);
       res.redirect('/reviews');
     } catch (err) {
-      console.log('there was a problem creating a review');
+      throw err;
     }
   }
 
   @Get('/:id')
   async getReview(@Res() res, @Param() params)  {
     try {
-      const foundReview = await this.reviewsService.findById(params.id);
-      res.render("reviews/details", { review: foundReview });
+      const retrievedReview = await this.reviewsService.findById(params.id);
+      res.render("reviews/details", { 
+        review: retrievedReview 
+      });
     } catch (err) {
       res.redirect('/reviews');
-      console.log('there was a problem finding the review');
     }
   }
 
   @Get('/edit/:id')
-  async getEditReviewDetails(@Res() res, @Param() params)  {
+  async getEditReview(@Res() res, @Param() params)  {
     try {
-      const foundReview = await this.reviewsService.findById(params.id);
-      res.render("reviews/edit", { review: foundReview });
+      const retrievedReview = await this.reviewsService.findById(params.id);
+      res.render("reviews/edit", { 
+        review: retrievedReview 
+      });
     } catch (err) {
       res.redirect('/reviews');
-      console.log('there was a problem finding the review');
     }
   }
 
   @Post('/:id')
-  async editReviewDetails(@Res() res, @Param() params, @Body() editReviewViewModel: EditReviewViewModel) {
+  async editReview(@Res() res, @Param() params, @Body() editReviewCommand: EditReviewCommand {
     try {
-      const updatedReview = editReviewViewModel;
-      const review = await this.reviewsService.findByIdAndUpdate(params.id, updatedReview);
+      const review = await this.reviewsService.findByIdAndUpdate(params.id, editReviewCommand);
       res.redirect('/reviews/');
     } catch (err) {
-      res.redirect('/reviews/');
+      throw err;
     }
   }
 

@@ -1,11 +1,11 @@
-import { IUser } from '../interfaces/user.interface'
+import { User } from '../interfaces/user.interface'
 import { Document, Schema, Error, Model, model } from 'mongoose';
 import * as bcrypt from 'bcrypt-nodejs';
 import * as crypto from 'crypto';
 import * as Promise from 'bluebird';
 const bcryptAsync: any = Promise.promisifyAll(bcrypt);
 
-export interface IUserModel extends IUser, Document {
+export interface UserModel extends User, Document {
   comparePassword?: (candidatePassword: string) => boolean;
   generateHash?: (password: string) => string;
   gravatar?: (size: number) => string;
@@ -64,4 +64,4 @@ userSchema.methods.gravatar = function(size: number) {
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
 };
 
-export const User: Model<IUserModel> = model<IUserModel>('User', userSchema);
+export const User: Model<UserModel> = model<UserModel>('User', userSchema);

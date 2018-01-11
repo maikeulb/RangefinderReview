@@ -1,5 +1,5 @@
 import { Component, Inject } from '@nestjs/common';
-import { User, IUserModel } from '../schemas/user.schema';
+import { User, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
@@ -32,10 +32,10 @@ export class LocalRegisterStrategy extends Strategy {
 
   async register(email, password, done) {
     try {
-      const user: IUserModel = await this.accountService.findByEmail(email);
+      const user: UserModel = await this.accountService.findByEmail(email);
       if (!user) {
 
-        const newUser: IUserModel = new User({
+        const newUser: UserModel = new User({
           email: email,
           password: password,
         });
