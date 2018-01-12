@@ -1,5 +1,5 @@
 import { Component, Inject } from '@nestjs/common';
-import { User, UserModel } from '../schemas/user.schema';
+import { Users, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
@@ -23,7 +23,7 @@ export class LocalLoginStrategy extends Strategy {
     });
 
     passport.deserializeUser((id, done) => {
-      User.findById(id, (err, user) => {
+      Users.findById(id, (err, user) => {
         done(err, user);
       });
     });

@@ -4,20 +4,18 @@ import {
   MiddlewaresConsumer,
   RequestMethod,
 } from '@nestjs/common';
-import { DatabaseModule } from '../database/database.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ReviewsController } from './reviews.controller';
-import { ReviewsService } from './reviews.service';
-import { reviewsProviders } from './reviews.providers';
+import { ReviewsService } from '../data/repositories/reviews.service';
+import { ReviewSchema } from '../models/schemas/review.schema';
 import { EnsureLoggedInMiddleware } from '../common/middlewares/ensureLoggedIn.middleware';
 
 @Module({
-  modules: [DatabaseModule],
+  imports: [MongooseModule.forFeature([{ name: 'Review', schema: ReviewSchema }])],
   controllers: [ReviewsController],
-  components: [
-    ReviewsService,
-    ...reviewsProviders,
-  ],
+  components: [ReviewsService],
 })
+
 // export class ReviewsModule {}
 
 export class ReviewsModule implements NestModule {

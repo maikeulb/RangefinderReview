@@ -1,6 +1,6 @@
 import { Component } from '@nestjs/common';
 import { SecretKey } from './secretKeys';
-import { User, UserModel } from '../schemas/user.schema';
+import { Users, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
@@ -26,7 +26,7 @@ export class GoogleStrategy extends OAuth2Strategy {
     });
 
     passport.deserializeUser((id, done) => {
-      User.findById(id, (err, user) => {
+      Users.findById(id, (err, user) => {
         done(err, user);
       });
     });
@@ -42,7 +42,7 @@ export class GoogleStrategy extends OAuth2Strategy {
       }
 
       if (!existUser) {
-        const newUser: UserModel = new User ({
+        const newUser: UserModel = new Users ({
           displayName: profile.displayName,
           email: profile.emails[0].value,
           googleAccount: {

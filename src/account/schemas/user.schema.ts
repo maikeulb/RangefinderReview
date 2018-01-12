@@ -11,7 +11,7 @@ export interface UserModel extends User, Document {
   gravatar?: (size: number) => string;
 }
 
-const userSchema = new Schema({
+const UserSchema = new Schema({
   displayName: String,
   email: { type: String, unique: true },
   password: String,
@@ -31,7 +31,7 @@ const userSchema = new Schema({
  * Password hash middleware.
  */
 
-userSchema.pre('save', function save(next) {
+UserSchema.pre('save', function save(next) {
   const user = this;
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
@@ -44,7 +44,7 @@ userSchema.pre('save', function save(next) {
   });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword: string) {
+UserSchema.methods.comparePassword = function(candidatePassword: string) {
   try {
     return bcryptAsync.compareAsync(candidatePassword, this.password);
   }
@@ -53,7 +53,7 @@ userSchema.methods.comparePassword = function(candidatePassword: string) {
   }
 };
 
-userSchema.methods.gravatar = function(size: number) {
+UserSchema.methods.gravatar = function(size: number) {
   if (!size) {
     size = 200;
   }
@@ -64,4 +64,4 @@ userSchema.methods.gravatar = function(size: number) {
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
 };
 
-export const User: Model<UserModel> = model<UserModel>('User', userSchema);
+export const Users: Model<UserModel> = model<UserModel>('Users', UserSchema);

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Delete, Req, Res, Param } from '@nestjs/common';
-// import { Review } from '../models/interfaces/review.interface';
-import { Review } from '../models/schemas/review.schema';
+import { Review } from '../models/interfaces/review.interface';
+// import { Review } from '../models/schemas/review.schema';
 import { CreateReviewCommand} from './commands/createReview.command';
 import { EditReviewCommand} from './commands/editReview.command';
 import { ReviewsService } from '../data/repositories/reviews.service';
@@ -57,7 +57,7 @@ export class ReviewsController {
   }
 
   @Post('/:id')
-  async editReview(@Res() res, @Param() params, @Body() editReviewCommand: EditReviewCommand {
+  async editReview(@Res() res, @Param() params, @Body() editReviewCommand: EditReviewCommand) {
     try {
       const review = await this.reviewsService.findByIdAndUpdate(params.id, editReviewCommand);
       res.redirect('/reviews/');

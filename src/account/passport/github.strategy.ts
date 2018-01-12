@@ -1,6 +1,6 @@
 import { Component } from '@nestjs/common';
 import { SecretKey } from './secretKeys';
-import { User, UserModel } from '../schemas/user.schema';
+import { Users, UserModel } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-github';
@@ -27,7 +27,7 @@ export class GithubStrategy extends Strategy {
     });
 
     passport.deserializeUser((id, done) => {
-      User.findById(id, (err, user) => {
+      Users.findById(id, (err, user) => {
         done(err, user);
       });
     });
@@ -41,7 +41,7 @@ export class GithubStrategy extends Strategy {
         return done(null, existUser); 
       }
       if (!existUser) {
-      const newUser: UserModel = new User ({
+      const newUser: UserModel = new Users ({
         displayName: profile.displayName,
         githubAccount: {
           githubId: profile.id,
