@@ -1,4 +1,5 @@
 <div class="row">
+
   <div class="col-md-3">
     <p class="lead">Rangefinder Review</p>
     <div class="list-group">
@@ -7,28 +8,64 @@
       <li class="list-group-item">Info 3</li>
     </div>
   </div>
+
   <div class="col-md-9">
+
     <div class="thumbnail">
-      <img class="img-responsive" src="<%= review.image %>">
+      <img class="img-responsive" src="<%= review.imageUrl %>">
       <div class="caption-full">
         <h4><a><%=review.name%></a></h4>
         <p><%= review.description %></p>
-      </div>
-    </div>
-    <div class="well">
-      <div class="text-right">
-        <a class="btn btn-success" href="/reviews/<%= review._id %>"> Add New Comment</a>
-      </div>
-      <hr>
-      </div>
-    </div>
-
+        <p>
+          <em>Submitted by: <%= review.author.username %>, <%= review.createdAt %></em>
+        </p>
         <% if(user){ %>
         <a href="/reviews/edit/<%=review._id%>" class="btn btn-xs btn-warning">EDIT</a>
 	<form action="/reviews/delete/<%= review._id %>" method="POST">
-          <button class="btn btn-danger">DELETE</button>
+          <button class="btn btn-danger">Delete</button>
         </form>
         <% } %>
+      </div>
+    </div>
+
+    <div class="well">
+      <div class="text-right">
+        <a class="btn btn-success" href="/comments/new/<%= review._id %>"> Add New Comment</a>
+      </div>
+      <hr>
+
+      <% review.comments.forEach(function(comment){ %>
+      <div class="row">
+        <div class="col-md-12">
+          <strong><%= comment.author.username %></strong>
+          <span class="pull-right"><%= comment.createdAt %></span>
+          <div>
+           <%= comment.comment%> 
+           <% if(user && comment.author.id.equals(user._id)){ %>
+
+            <div class="pull-right">
+
+              <form class="edit-form" action="/comments/edit/<%= comment._id %>" method="POST">
+	        <input type="hidden" name="review_id" value="<%= review._id %>">
+	        <input type="hidden" name="comment_id" value="<%= comment._id %>">
+	        <input type="hidden" name="comment" value="<%= comment.comment %>">
+                <button class="btn btn-xs btn-danger">EDIT</button>
+              </form>
+
+              <form class="delete-form" action="/comments/delete/<%=comment._id%>" method="POST">
+                <input type="hidden" name="review_id" value="<%= review._id %>">
+                <button class="btn btn-xs btn-danger">DELETE</button>
+              </form>
+
+            </div>
+
+           <% } %>
+           <hr>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
 
   </div>
 </div>

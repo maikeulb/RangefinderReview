@@ -27,10 +27,6 @@ const UserSchema = new Schema({
 //     return bcrypt.hash(password, bcrypt.genSaltSync(8), null);
 // };
 
-/**
- * Password hash middleware.
- */
-
 UserSchema.pre('save', function save(next) {
   const user = this;
   if (!user.isModified('password')) { return next(); }

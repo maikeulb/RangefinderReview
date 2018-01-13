@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Put, Body, Delete, Req, Res, Param } from '@nestjs/common';
 import { Review } from '../models/interfaces/review.interface';
-// import { Review } from '../models/schemas/review.schema';
 import { CreateReviewCommand} from './commands/createReview.command';
 import { EditReviewCommand} from './commands/editReview.command';
 import { ReviewsService } from '../data/repositories/reviews.service';
@@ -19,7 +18,7 @@ export class ReviewsController {
 
   @Get('/create')
   getCreateReview(@Req() req, @Res() res, err) {
-    return res.render("reviews/create");
+    return res.render('reviews/create');
   }
 
   @Post('/create')
@@ -32,12 +31,12 @@ export class ReviewsController {
     }
   }
 
-  @Get('/:id')
+  @Get('/details/:id')
   async getReview(@Res() res, @Param() params)  {
     try {
-      const retrievedReview = await this.reviewsService.findById(params.id);
-      res.render("reviews/details", { 
-        review: retrievedReview 
+      const result = await this.reviewsService.findById(params.id);
+      return res.render('reviews/details', {
+        review: result,
       });
     } catch (err) {
       res.redirect('/reviews');
@@ -47,16 +46,16 @@ export class ReviewsController {
   @Get('/edit/:id')
   async getEditReview(@Res() res, @Param() params)  {
     try {
-      const retrievedReview = await this.reviewsService.findById(params.id);
-      res.render("reviews/edit", { 
-        review: retrievedReview 
+      const result = await this.reviewsService.findById(params.id);
+      res.render('reviews/edit', {
+        review: result,
       });
     } catch (err) {
       res.redirect('/reviews');
     }
   }
 
-  @Post('/:id')
+  @Post('/edit/:id')
   async editReview(@Res() res, @Param() params, @Body() editReviewCommand: EditReviewCommand) {
     try {
       const review = await this.reviewsService.findByIdAndUpdate(params.id, editReviewCommand);
@@ -75,29 +74,5 @@ export class ReviewsController {
       res.redirect('/');
     }
   }
-
-
-// // DELETE - removes campground and its comments from the database
-// router.delete("/:id", isLoggedIn, checkUserCampground, function(req, res) {
-//     Comment.remove({
-//       _id: {
-//         $in: req.campground.comments
-//       }
-//     }, function(err) {
-//       if(err) {
-//           req.flash('error', err.message);
-//           res.redirect('/');
-//       } else {
-//           req.campground.remove(function(err) {
-//             if(err) {
-//                 req.flash('error', err.message);
-//                 return res.redirect('/');
-//             }
-//             req.flash('error', 'Campground deleted!');
-//             res.redirect('/campgrounds');
-//           });
-//       }
-//     })
-// });
 
 }

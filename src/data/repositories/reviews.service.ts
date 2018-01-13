@@ -2,7 +2,6 @@ import { Component, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Review } from '../../models/interfaces/review.interface';
-// import { ReviewSchema, ReviewModel } from '../../models//schemas/review.schema';
 import { ReviewSchema } from '../../models//schemas/review.schema';
 import { CreateReviewCommand } from '../../reviews/commands/createReview.command';
 import { EditReviewCommand } from '../../reviews/commands/editReview.command';
@@ -10,8 +9,6 @@ import { EditReviewCommand } from '../../reviews/commands/editReview.command';
 @Component()
 export class ReviewsService {
   constructor(@InjectModel(ReviewSchema) private readonly reviewModel: Model<Review>) {}
-
-    // @Inject('ReviewsToken') private readonly reviewModel: Model<ReviewModel>) {}
 
   async create(command: CreateReviewCommand): Promise<Review> {
     const createdReview = new this.reviewModel(command);
@@ -26,9 +23,11 @@ export class ReviewsService {
     }
   }
 
-  async findById(id: string): Promise<Review> {
+  async findById(id: string) {
     try {
-      return await this.reviewModel.findById(id);
+      return await this.reviewModel.findById(id)
+        .populate('comments')
+        .exec();
     } catch (err) {
       throw err;
     }
