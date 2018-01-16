@@ -12,9 +12,7 @@
             true,
             "single"
         ],
-        "member-access": [
-            false
-        ],
+        "ban-types": false,
         "ordered-imports": [
             false
         ],
@@ -29,6 +27,9 @@
             false
         ],
         "array-type": [
+            false
+        ],
+        "member-access": [
             false
         ],
         "no-empty-interface": false,

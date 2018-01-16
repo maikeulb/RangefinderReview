@@ -2,18 +2,22 @@ import {
   Module,
   NestModule,
   MiddlewaresConsumer,
-  RequestMethod
+  RequestMethod,
 } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AccountController } from './account.controller';
+import { UsersService } from './users.service';
+import { UserSchema } from './schemas/user.schema';
+
 import { GoogleStrategy } from './passport/google.strategy';
 import { GithubStrategy } from './passport/github.strategy';
 import { LocalLoginStrategy } from './passport/localLogin.strategy';
 import { LocalRegisterStrategy } from './passport/localRegister.strategy';
 import { SecretKey } from './passport/secretKeys';
-import { AccountService } from './account.service';
 import * as passport from 'passport';
 
 @Module({
+  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],
   controllers: [AccountController],
   components: [
     GoogleStrategy,
@@ -21,7 +25,7 @@ import * as passport from 'passport';
     LocalLoginStrategy,
     LocalRegisterStrategy,
     SecretKey,
-    AccountService,
+    UsersService,
   ],
 })
 
@@ -73,6 +77,5 @@ export class AccountModule implements NestModule {
         failureRedirect: '/error',
       }))
       .forRoutes({ path: '/account/register', method: RequestMethod.POST });
-
   }
 }

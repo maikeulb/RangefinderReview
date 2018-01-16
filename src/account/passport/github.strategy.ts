@@ -1,16 +1,20 @@
-import { Component } from '@nestjs/common';
+import { Component, Inject } from '@nestjs/common';
 import { SecretKey } from './secretKeys';
-import { Users, UserModel } from '../schemas/user.schema';
+
+import { User } from '../interfaces/user.interface';
+import { UserSchema } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-github';
-import { AccountService } from '../account.service';
+import { UsersService } from '../users.service';
+
+import { CreateGithubUserCommand } from '../commands/createGithubUser.command';
 
 @Component()
 export class GithubStrategy extends Strategy {
   constructor(
     private secretKey: SecretKey,
-    private readonly accountService: AccountService) {
+    private readonly usersService: UsersService) {
     super({
       clientID: secretKey.getGithubKeys().clientID,
       clientSecret: secretKey.getGithubKeys().clientSecret,
@@ -26,29 +30,35 @@ export class GithubStrategy extends Strategy {
       done(null, user.id);
     });
 
-    passport.deserializeUser((id, done) => {
-      Users.findById(id, (err, user) => {
-        done(err, user);
-      });
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await usersService.findById(id);
+        if (user) {
+          return done(null, user);
+        }
+      } catch {
+        return done(null, false);
+      }
     });
 
   }
 
   async logIn(profile, accessToken, done) {
     try {
-      const existUser: UserModel = await this.accountService.findById(profile.id);
-      if (existUser) { 
-        return done(null, existUser); 
+      const existUser = await this.usersService.findById(profile.id);
+      if (existUser) {
+        return done(null, existUser);
       }
+
       if (!existUser) {
-      const newUser: UserModel = new Users ({
-        displayName: profile.displayName,
-        githubAccount: {
-          githubId: profile.id,
-          githubToken: accessToken,
-        },
-      });
-      newUser.save();
+      const githubUser = new CreateGithubUserCommand();
+      githubUser.displayName = profile.displayName;
+      githubUser.githubAccount = {
+        githubId: profile.id,
+        githubToken: accessToken,
+      };
+
+      const newUser = await this.usersService.createGithubUser(githubUser);
       return done(null, newUser); }
 
     } catch (err) {

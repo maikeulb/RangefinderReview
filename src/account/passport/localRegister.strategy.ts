@@ -1,13 +1,17 @@
 import { Component, Inject } from '@nestjs/common';
-import { Users, UserModel } from '../schemas/user.schema';
+
+import { User } from '../interfaces/user.interface';
+import { UserSchema } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
-import { AccountService } from '../account.service';
+import { UsersService } from '../users.service';
+
+import { CreateLocalUserCommand } from '../commands/createLocalUser.command';
 
 @Component()
 export class LocalRegisterStrategy extends Strategy {
-  constructor(private readonly accountService: AccountService) {
+  constructor(private readonly usersService: UsersService) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -18,34 +22,40 @@ export class LocalRegisterStrategy extends Strategy {
 
     passport.use('local-register', this);
 
-    passport.serializeUser((user:any, done) => {
-      done(null, user.id);
+    passport.serializeUser((user: any, done) => {
+      return done(null, user.id);
     });
 
-    passport.deserializeUser((id, done) => {
-      Users.findById(id, (err, user) => {
-        done(err, user);
-      });
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await usersService.findById(id);
+        if (user) {
+          return done(null, user);
+        }
+      } catch {
+        return done(null, false);
+      }
     });
 
   }
 
   async register(email, password, done) {
     try {
-      const user: UserModel = await this.accountService.findByEmail(email);
-      if (!user) {
-
-        const newUser: UserModel = new Users ({
-          email: email,
-          password: password,
-        });
-
-        newUser.save();
-        return done(null, newUser);
-      }
-      if (user) {
+      const existUser = await this.usersService.findByEmail(email);
+      if (existUser) {
        return done ('user exists', false);
       }
+
+      if (!existUser) {
+        const localUser = new CreateLocalUserCommand();
+        localUser.email = email;
+        localUser.password = password;
+        console.log(localUser);
+
+        const newUser = await this.usersService.createLocalUser(localUser);
+        console.log(newUser);
+        return done(null, newUser); }
+
     } catch (err) {
       done('there was a problem logging in from local-register', false );
     }

@@ -1,4 +1,6 @@
-export interface User {
+import { Document } from 'mongoose';
+
+export interface User extends Document {
   readonly displayName: string;
   readonly email?: string;
   readonly password?: string;
@@ -7,6 +9,10 @@ export interface User {
 
   readonly googleAccount?: Google;
   readonly githubAccount?: Github;
+
+  comparePassword?: (candidatePassword: string) => boolean;
+  generateHash?: (password: string) => string;
+  gravatar?: (size: number) => string;
 }
 
 interface Google {

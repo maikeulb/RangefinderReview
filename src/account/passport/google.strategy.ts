@@ -1,23 +1,27 @@
 import { Component } from '@nestjs/common';
 import { SecretKey } from './secretKeys';
-import { Users, UserModel } from '../schemas/user.schema';
+
+import { User } from '../interfaces/user.interface';
+import { UserSchema } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
-import { AccountService } from '../account.service';
+import { UsersService } from '../users.service';
+
+import { CreateGoogleUserCommand } from '../commands/createGoogleUser.command';
 
 @Component()
 export class GoogleStrategy extends OAuth2Strategy {
   constructor(
     private secretKey: SecretKey,
-    private readonly accountService: AccountService) {
+    private readonly usersService: UsersService) {
     super({
       clientID: secretKey.getGoogleKeys().clientID,
       clientSecret: secretKey.getGoogleKeys().clientSecret,
       callbackURL: 'http://localhost:3000/account/google/callback',
     }, async (accessToken, refreshToken, profile, done) => {
-      await this.logIn(accessToken, profile, done); },
-    );
+      await this.logIn(accessToken, profile, done);
+    });
 
     passport.use(this);
 
@@ -25,34 +29,37 @@ export class GoogleStrategy extends OAuth2Strategy {
       done(null, user.id);
     });
 
-    passport.deserializeUser((id, done) => {
-      Users.findById(id, (err, user) => {
-        done(err, user);
-      });
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await usersService.findById(id);
+        if (user) {
+          return done(null, user);
+        }
+      } catch {
+        return done(null, false);
+      }
     });
 
   }
 
   async logIn(profile, accessToken, done) {
     try {
-
-      const existUser: UserModel = await this.accountService.findById(profile.id);
+      const existUser = await this.usersService.findById(profile.id);
       if (existUser) {
         return done(null, existUser);
       }
 
       if (!existUser) {
-        const newUser: UserModel = new Users ({
-          displayName: profile.displayName,
-          email: profile.emails[0].value,
-          googleAccount: {
-            googleId: profile.id,
-            googleToken: accessToken,
-          },
-        });
-        newUser.save();
-        return done(null, newUser);
-      }
+        const googleUser = new CreateGoogleUserCommand();
+        googleUser.displayName = profile.displayName;
+        googleUser.email = profile.emails[0].value;
+        googleUser.googleAccount = {
+          googleId: profile.id,
+          googleToken: accessToken,
+        };
+
+        const newUser = await this.usersService.createGoogleUser(googleUser);
+        return done(null, newUser); }
 
     } catch (err) {
       done('there was a problem logging in', false );

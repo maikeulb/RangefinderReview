@@ -1,10 +1,15 @@
 import { Controller, Get, Post, Put, Body, Delete, Req, Res, Param } from '@nestjs/common';
-import { Review } from '../models/interfaces/review.interface';
-import { Comment } from '../models/interfaces/comment.interface';
-import { CreateCommentCommand} from './commands/createComment.command';
-import { EditCommentCommand} from './commands/editComment.command';
+
 import { ReviewsService } from '../data/repositories/reviews.service';
 import { CommentsService } from '../data/repositories/comments.service';
+
+import { Review } from '../models/interfaces/review.interface';
+import { Comment } from '../models/interfaces/comment.interface';
+
+import { CreateCommentCommand} from './commands/createComment.command';
+import { EditCommentCommand} from './commands/editComment.command';
+
+import { Request, Response, NextFunction } from "express";
 
 @Controller('comments')
 export class CommentsController {
@@ -13,63 +18,74 @@ export class CommentsController {
   ) {}
 
   @Get('/new/:id')
-  async getCreateNew(@Req() req, @Res() res, @Param() params): Promise<Review> {
+  async getCreateNew(@Res() res: Response, @Param() reviewId: string) {
     try {
-      const result = await this.reviewsService.findById(params.id);
-      return res.render('comments/new', {
-        review: result,
-      });
+      const result = await this.reviewsService.findById(reviewId);
+
+      if (result.is_ok())
+        return res.render('comments/new', {
+          review: result.unwrap(),
+        });
+      if (result.is_err())
+        return res.send('404: File Not Found');
+
     } catch (err) {
       throw err;
     }
   }
 
   @Post('/new/:id')
-  async createNew(@Req() req, @Res() res, @Param() params, @Body() createCommentCommand: CreateCommentCommand): Promise<Review[]> {
+  async createNew(@Req() req: Request, @Res() res: Response, @Param() reviewId: string, @Body() createCommentCommand: CreateCommentCommand) {
     try {
-      const review = await this.reviewsService.findById(params.id);
-      const comment = await this.commentsService.create(createCommentCommand);
+      const reviewResult = await this.reviewsService.findById(reviewId);
+      const commentResult = await this.commentsService.create(createCommentCommand);
 
-      comment.author.username = req.user.username;
-      comment.author.id = req.user._id;
-      await comment.save();
+      if (reviewResult.is_ok() && commentResult.is_ok()) {
+        const review = reviewResult.unwrap();
+        const comment = commentResult.unwrap();
 
-      review.comments = review.comments.concat([comment]);
+        comment.author.username = req.user.username;
+        comment.author.id = req.user._id;
+        await comment.save();
 
-      await review.save();
+        review.comments = review.comments.concat([comment]);
+        await review.save();
+        return res.redirect('/reviews/details/' + review._id);
+      }
+      if (reviewResult.is_err() || commentResult.is_err())
+        return res.send('404: File Not Found');
 
-      return res.redirect('/reviews/details/' + review._id);
     } catch (err) {
       throw err;
     }
   }
 
-  @Post('/edit/:id')
-  async getEditComment(@Res() res, @Req() req, @Body() body, @Param() params)  {
-    try {
-      console.log(body);
-      console.log(req.body.review_id);
-      console.log(req.body.comment);
-      res.render('comments/edit', {
-        review: req.body.review,
-        review_id: req.body.review_id,
-        comment_id: req.body.comment_id,
-        comment: req.body.comment,
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
+  // @Post('/edit/:id')
+  // async getEditComment(@Req() req: Request, @Res() res: Response, @Body() body, @Param() params) {
+  //   try {
+  //     console.log(body);
+  //     console.log(req.body.review_id);
+  //     console.log(req.body.comment);
+  //     res.render('comments/edit', {
+  //       review: req.body.review,
+  //       review_id: req.body.review_id,
+  //       comment_id: req.body.comment_id,
+  //       comment: req.body.comment,
+  //     });
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // }
 
-  @Post('/:id')
-  async editComment(@Res() res, @Param() params, @Body() editCommentCommand: EditCommentCommand) {
-    try {
-      const comment = await this.commentsService.findByIdAndUpdate(params.id, editCommentCommand);
-      res.redirect('/reviews/details/' + params.id);
-    } catch (err) {
-      throw err;
-    }
-  }
+  // @Post('/:id')
+  // async editComment(@Res() res: Response, @Param() reviewId: string, @Body() editCommentCommand: EditCommentCommand) {
+  //   try {
+  //     await this.commentsService.findByIdAndUpdate(reviewId, editCommentCommand);
+  //     res.redirect('/reviews/details/' + params.id);
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // }
 
   // @Post('/delete/:id')
   // async deleteReview(@Res() res, @Param() params) {

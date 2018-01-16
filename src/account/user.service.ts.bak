@@ -1,9 +1,11 @@
 import { Component, Inject } from '@nestjs/common';
+
 import { HttpException } from '@nestjs/core';
+
 import { Users, UserModel } from './schemas/user.schema';
 
 @Component()
-export class AccountService {
+export class UserService { // dependency injection?
 
   async findByEmail(email: string): Promise<UserModel> {
     try {
@@ -24,5 +26,4 @@ export class AccountService {
       console.log('there was a problem registering');
     }
   }
-
 }
