@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Res, Req, Next } from '@nestjs/common';
-import { Request, Response, NextFunction } from "express";
-import { WriteError } from "mongodb";
+import { Request, Response, NextFunction } from 'express';
 
 import { UsersService } from './users.service';
 

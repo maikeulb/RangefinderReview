@@ -18,7 +18,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get('/')
-  async getIndex(@Req() req: Request, @Res() res: Response, err) {
+  async getIndex(@Req() req: Request, @Res() res: Response) {
     try {
       const result = await this.reviewsService.findAll();
 
@@ -35,7 +35,7 @@ export class ReviewsController {
   }
 
   @Get('/create')
-  getCreateReview(@Req() req: Request, @Res() res: Response, err) {
+  getCreateReview(@Req() req: Request, @Res() res: Response) {
     try {
       return res.render('reviews/create');
     } catch (err) {
@@ -59,9 +59,9 @@ export class ReviewsController {
   }
 
   @Get('/details/:id')
-  async getReview(@Res() res: Response, @Param('id') id: string) {
+  async getReview(@Res() res: Response, @Param('id') reviewId: string) {
     try {
-      const result = await this.reviewsService.findById(id);
+      const result = await this.reviewsService.findById(reviewId);
 
       if (result.is_ok())
         return res.render('reviews/details', {
@@ -76,9 +76,9 @@ export class ReviewsController {
   }
 
   @Get('/edit/:id')
-  async getEditReview(@Res() res: Response, @Param('id') id: string ) {
+  async getEditReview(@Res() res: Response, @Param('id') reviewId: string ) {
     try {
-      const result = await this.reviewsService.findById(id);
+      const result = await this.reviewsService.findById(reviewId);
 
       if (result.is_ok())
         return res.render('reviews/edit', {
@@ -93,9 +93,9 @@ export class ReviewsController {
   }
 
   @Post('/edit/:id')
-  async editReview(@Res() res: Response, @Param('id') id: string, @Body() editReviewCommand: EditReviewCommand) {
+  async editReview(@Res() res: Response, @Param('id') reviewId: string, @Body() editReviewCommand: EditReviewCommand) {
     try {
-      const result = await this.reviewsService.findByIdAndUpdate(id, editReviewCommand);
+      const result = await this.reviewsService.findByIdAndUpdate(reviewId, editReviewCommand);
 
       if (result.is_ok())
         return res.redirect('/reviews/');
@@ -108,9 +108,9 @@ export class ReviewsController {
   }
 
   @Post('/delete/:id')
-  async deleteReview(@Res() res: Response, @Param('id') id: string) {
+  async deleteReview(@Res() res: Response, @Param('id') reviewId: string) {
     try {
-      const result = await this.reviewsService.remove(id);
+      const result = await this.reviewsService.remove(reviewId);
 
       if (result.is_ok())
         return res.redirect('/reviews/');
@@ -119,7 +119,6 @@ export class ReviewsController {
 
     } catch (err) {
       res.redirect('/');
-      // log error (youtube-nest example and contoso-node)
     }
   }
 
