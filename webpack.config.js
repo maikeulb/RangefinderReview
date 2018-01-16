@@ -14,7 +14,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.scss', '.css', '.ts'],
-    modules: [path.resolve('./'), path.resolve('./node_modules')],
+    modules: [
+      path.resolve('./'), 
+      path.resolve('./node_modules')
+    ],
   },
   module: {
     rules: [
@@ -36,9 +39,13 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader'
       },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000'
+      { 
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff' 
+      },
+      { 
+        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+        loader: 'file-loader' 
       },
       {
         test: /\.css$/,
@@ -64,6 +71,11 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
       filename: 'node-static.js',
