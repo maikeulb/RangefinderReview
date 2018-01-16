@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountController } from './account.controller';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { UserSchema } from './schemas/user.schema';
 
-import { GoogleStrategy } from './passport/google.strategy';
-import { GithubStrategy } from './passport/github.strategy';
-import { LocalLoginStrategy } from './passport/localLogin.strategy';
-import { LocalRegisterStrategy } from './passport/localRegister.strategy';
-import { SecretKey } from './passport/secretKeys';
+import { GoogleStrategy } from './providers/google.strategy';
+import { GithubStrategy } from './providers/github.strategy';
+import { LocalLoginStrategy } from './providers/localLogin.strategy';
+import { LocalRegisterStrategy } from './providers/localRegister.strategy';
+import { SecretKey } from './providers/secretKeys';
 import * as passport from 'passport';
 
 @Module({
@@ -25,7 +25,7 @@ import * as passport from 'passport';
     LocalLoginStrategy,
     LocalRegisterStrategy,
     SecretKey,
-    UsersService,
+    UserService,
   ],
 })
 

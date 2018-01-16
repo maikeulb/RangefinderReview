@@ -1,14 +1,9 @@
 import { Document, Schema, Error, Model, model } from 'mongoose';
-import { User } from '../interfaces/user.interface'
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
 
 export const UserSchema = new Schema({
-  displayName: String,
   email: { type: String, unique: true },
   password: String,
-  passwordResetToken: String,
-  passwordResetExpires:  Date,
 
   google: { type: Object },
   github: { type: Object },

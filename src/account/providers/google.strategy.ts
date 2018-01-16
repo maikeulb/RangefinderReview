@@ -6,7 +6,7 @@ import { UserSchema } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
-import { UsersService } from '../users.service';
+import { UserService } from '../user.service';
 
 import { CreateGoogleUserCommand } from '../commands/createGoogleUser.command';
 
@@ -14,7 +14,7 @@ import { CreateGoogleUserCommand } from '../commands/createGoogleUser.command';
 export class GoogleStrategy extends OAuth2Strategy {
   constructor(
     private secretKey: SecretKey,
-    private readonly usersService: UsersService) {
+    private readonly userService: UserService) {
     super({
       clientID: secretKey.getGoogleKeys().clientID,
       clientSecret: secretKey.getGoogleKeys().clientSecret,
@@ -31,7 +31,7 @@ export class GoogleStrategy extends OAuth2Strategy {
 
     passport.deserializeUser(async (id, done) => {
       try {
-        const user = await usersService.findById(id);
+        const user = await userService.findById(id);
         if (user) {
           return done(null, user);
         }
@@ -39,16 +39,14 @@ export class GoogleStrategy extends OAuth2Strategy {
         return done(null, false);
       }
     });
-
   }
 
   async logIn(profile, accessToken, done) {
     try {
-      const existUser = await this.usersService.findById(profile.id);
+      const existUser = await this.userService.findById(profile.id);
       if (existUser) {
         return done(null, existUser);
       }
-
       if (!existUser) {
         const googleUser = new CreateGoogleUserCommand();
         googleUser.displayName = profile.displayName;
@@ -57,10 +55,8 @@ export class GoogleStrategy extends OAuth2Strategy {
           googleId: profile.id,
           googleToken: accessToken,
         };
-
-        const newUser = await this.usersService.createGoogleUser(googleUser);
+        const newUser = await this.userService.createGoogleUser(googleUser);
         return done(null, newUser); }
-
     } catch (err) {
       done('there was a problem logging in', false );
     }

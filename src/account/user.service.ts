@@ -15,21 +15,22 @@ import { HttpException } from '@nestjs/core';
 // const request = require("express-validator");
 
 @Component()
-export class UsersService {
+export class UserService {
   constructor(@InjectModel(UserSchema) private readonly userModel: Model<User>) {}
 
   async findByEmail(email: string): Promise<User> {
     try {
-      const user: any = await this.userModel.findOne({ email: email.toLowerCase() });
+      const user = await this.userModel.findOne({ email: email.toLowerCase() });
       return user;
     } catch (err) {
       throw err;
     }
   }
 
-  async findById(id ): Promise<User> {
+  async findById(id: string): Promise<User> {
     try {
-      const user: any = await this.userModel.findOne(id);
+      console.log(id);
+      const user = await this.userModel.findOne(id);
       return user;
     } catch (err) {
       throw err;
@@ -38,7 +39,7 @@ export class UsersService {
 
   async createGithubUser(command: CreateGithubUserCommand): Promise<User> {
     try {
-      const createdUser: any = new this.userModel(command);
+      const createdUser = new this.userModel(command);
       await createdUser.save();
       return createdUser;
     } catch (err) {
@@ -48,7 +49,7 @@ export class UsersService {
 
   async createGoogleUser(command: CreateGoogleUserCommand): Promise<User> {
     try {
-      const createdUser: any = new this.userModel(command);
+      const createdUser = new this.userModel(command);
       await createdUser.save();
       return createdUser;
     } catch (err) {
@@ -58,7 +59,7 @@ export class UsersService {
 
   async createLocalUser(command: CreateLocalUserCommand): Promise<User> {
     try {
-      const createdUser: any = new this.userModel(command);
+      const createdUser = new this.userModel(command);
       await createdUser.save();
       return createdUser;
     } catch (err) {

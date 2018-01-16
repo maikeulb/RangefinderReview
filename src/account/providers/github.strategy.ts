@@ -6,7 +6,7 @@ import { UserSchema } from '../schemas/user.schema';
 
 import * as passport from 'passport';
 import { Strategy } from 'passport-github';
-import { UsersService } from '../users.service';
+import { UserService } from '../user.service';
 
 import { CreateGithubUserCommand } from '../commands/createGithubUser.command';
 
@@ -14,7 +14,7 @@ import { CreateGithubUserCommand } from '../commands/createGithubUser.command';
 export class GithubStrategy extends Strategy {
   constructor(
     private secretKey: SecretKey,
-    private readonly usersService: UsersService) {
+    private readonly userService: UserService) {
     super({
       clientID: secretKey.getGithubKeys().clientID,
       clientSecret: secretKey.getGithubKeys().clientSecret,
@@ -32,7 +32,7 @@ export class GithubStrategy extends Strategy {
 
     passport.deserializeUser(async (id, done) => {
       try {
-        const user = await usersService.findById(id);
+        const user = await userService.findById(id);
         if (user) {
           return done(null, user);
         }
@@ -45,7 +45,7 @@ export class GithubStrategy extends Strategy {
 
   async logIn(profile, accessToken, done) {
     try {
-      const existUser = await this.usersService.findById(profile.id);
+      const existUser = await this.userService.findById(profile.id);
       if (existUser) {
         return done(null, existUser);
       }
@@ -58,7 +58,7 @@ export class GithubStrategy extends Strategy {
         githubToken: accessToken,
       };
 
-      const newUser = await this.usersService.createGithubUser(githubUser);
+      const newUser = await this.userService.createGithubUser(githubUser);
       return done(null, newUser); }
 
     } catch (err) {

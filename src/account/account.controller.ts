@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Res, Req, Next } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
 @Controller('account')
 export class AccountController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('login')
   getLogin( @Req() req: Request, @Res() res: Response ): void {
