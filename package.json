@@ -26,6 +26,7 @@
     "express-ejs-layouts": "^2.3.1",
     "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",
+    "monet": "^0.8.10",
     "mongoose": "^4.13.9",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",

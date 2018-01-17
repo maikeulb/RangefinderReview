@@ -16,29 +16,17 @@ export class CommentsService {
 
   async create(command: CreateCommentCommand): Promise<Result<Comment, string>> {
     try {
-      const comment = await new this.commentModel(command);
-
-      if (comment)
-        return Ok(comment);
-      if (!comment)
-        return Err('Value not found');
-
+      return Ok(await new this.commentModel(command));
     } catch (err) {
-      throw err;
+      return Err('comment could not created');
     }
   }
 
-  async findByIdAndUpdate(id: string, command: EditCommentCommand): Promise<Result<boolean, string>> {
+  async findByIdAndUpdate(id: string, command: EditCommentCommand): Promise<Result<Comment, string>> {
     try {
-      const result = await this.commentModel.findByIdAndUpdate(id, command);
-
-      if (result )
-        return Ok(true);
-      if (!result)
-        return Err('Value not found');
-
+      return Ok(await this.commentModel.findByIdAndUpdate(id, command));
     } catch (err) {
-      throw err;
+      return Err('could not update'); // log mongo err
     }
   }
 

@@ -9,83 +9,59 @@ import { CreateReviewCommand } from '../../reviews/commands/createReview.command
 import { EditReviewCommand } from '../../reviews/commands/editReview.command';
 
 import { Result, Ok, Err } from '@threestup/monads';
+import { Option, Some, None } from '@threestup/monads';
+
+import { WriteOpResult } from 'mongodb';
 
 @Component()
 export class ReviewsService {
   constructor(@InjectModel(ReviewSchema) private readonly reviewModel: Model<Review>) {}
 
-  async create(command: CreateReviewCommand): Promise<Result<boolean, string>> {
-    try {
-      const createdReview = new this.reviewModel(command);
-      await createdReview.save();
-
-      if (createdReview)
-        return Ok(true);
-      if (!createdReview)
-        return Err('Value not found');
-
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async remove(id: string): Promise<Result<boolean, string>> {
-    try {
-      const result = this.reviewModel.findById(id).remove()
+  async findAll(): Promise<Option<Review[]>> {
+      const optionReviews = await this.reviewModel.find()
         .exec();
-
-      if (result)
-        return Ok(true);
-      if (!result)
-        return Err('Value not found');
-
-    } catch (err) {
-      throw err;
-    }
+      return optionReviews ?
+        Some(optionReviews) :
+        None;
   }
 
   async findById(id: string): Promise<Result<Review, string>> {
     try {
-      const review = await this.reviewModel.findById(id)
+      return Ok(await this.reviewModel.findById(id)
         .populate('comments')
-        .exec();
-
-      if (review)
-        return Ok(review);
-      if (!review)
-        return Err('Value not found');
-
+        .exec()
+      );
     } catch (err) {
-      throw err;
+      return Err('review not found');
     }
   }
 
-  async findByIdAndUpdate(id: string, command: EditReviewCommand): Promise<Result<boolean, string>> {
+  async create(command: CreateReviewCommand): Promise<Result<Review, string>> {
     try {
-      const result = await this.reviewModel.findByIdAndUpdate(id, command);
-
-      if (result)
-        return Ok(true);
-      if (!result)
-        return Err('Value not found');
-
+      const resultCreate = new this.reviewModel(command);
+      await resultCreate.save(); // remove
+      return Ok(resultCreate);
     } catch (err) {
-      throw err;
+      return Err('could not update'); // log mongo err
     }
   }
 
-  async findAll(): Promise<Result<Review[], string>> {
+  async findByIdAndUpdate(id: string, command: EditReviewCommand): Promise<Result<Review, string>> {
     try {
-      const reviews = await this.reviewModel.find()
-        .exec();
-
-      if (reviews)
-        return Ok(reviews);
-      if (!reviews)
-        return Err('Value not found');
-
+      return Ok(await this.reviewModel.findByIdAndUpdate(id, command));
     } catch (err) {
-      throw err;
+      return Err('could not update'); // log mongo err
+    }
+  }
+
+  async remove(id: string): Promise<Result<WriteOpResult, string>> {
+    try {
+      return Ok(await this.reviewModel.findById(id)
+        .remove()
+        .exec()
+      );
+    } catch (err) {
+      return Err('could not remove'); // log mongo err
     }
   }
 }

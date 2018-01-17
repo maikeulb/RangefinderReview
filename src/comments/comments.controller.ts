@@ -19,45 +19,28 @@ export class CommentsController {
 
   @Get('/new/:id')
   async getCreateNew(@Res() res: Response, @Param() reviewId: string) {
-    try {
-      const result = await this.reviewsService.findById(reviewId);
-
-      if (result.is_ok())
-        return res.render('comments/new', {
-          review: result.unwrap(),
-        });
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      throw err;
-    }
+      const resultReview = await this.reviewsService.findById(reviewId);
+      return resultReview.is_ok() ?
+        res.render('comments/new', { review: resultReview.unwrap() }) :
+        res.send('404: File Not Found');
   }
 
   @Post('/new/:id')
   async createNew(@Req() req: Request, @Res() res: Response, @Param() reviewId: string, @Body() createCommentCommand: CreateCommentCommand) {
-    try {
       const reviewResult = await this.reviewsService.findById(reviewId);
       const commentResult = await this.commentsService.create(createCommentCommand);
-
       if (reviewResult.is_ok() && commentResult.is_ok()) {
         const review = reviewResult.unwrap();
         const comment = commentResult.unwrap();
-
         comment.author.username = req.user.username;
         comment.author.id = req.user._id;
         await comment.save();
-
         review.comments = review.comments.concat([comment]);
         await review.save();
         return res.redirect('/reviews/details/' + review._id);
-      }
-      if (reviewResult.is_err() || commentResult.is_err())
+      } else {
         return res.send('404: File Not Found');
-
-    } catch (err) {
-      throw err;
-    }
+      }
   }
 
   // @Post('/edit/:id')

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Body, Delete, Req, Res, Param } from '@nestjs/common';
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 import { ReviewsService } from '../data/repositories/reviews.service';
 
@@ -19,107 +19,54 @@ export class ReviewsController {
 
   @Get('/')
   async getIndex(@Req() req: Request, @Res() res: Response) {
-    try {
-      const result = await this.reviewsService.findAll();
-
-      if (result.is_ok())
-        return res.render('reviews/index', {
-          reviews: result.unwrap(),
-        });
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      throw err;
-    }
+      const optionReviews = await this.reviewsService.findAll();
+      return optionReviews.is_some() ?
+        res.render('reviews/index', { reviews: optionReviews.unwrap() }) :
+        res.send('Need reviews!'); // render review page
   }
 
   @Get('/create')
   getCreateReview(@Req() req: Request, @Res() res: Response) {
-    try {
       return res.render('reviews/create');
-    } catch (err) {
-      throw err;
-    }
   }
 
   @Post('/create')
   async createReview(@Res() res: Response, @Body() createReviewCommand: CreateReviewCommand) {
-    try {
-      const result = await this.reviewsService.create(createReviewCommand);
-
-      if (result.is_ok())
-        return res.redirect('/reviews');
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      throw err;
-    }
+      const resultCreate = await this.reviewsService.create(createReviewCommand);
+      return resultCreate.is_ok() ?
+        res.redirect('/reviews') :
+        res.send('404: File Not Found');
   }
 
   @Get('/details/:id')
   async getReview(@Res() res: Response, @Param('id') reviewId: string) {
-    try {
-      const result = await this.reviewsService.findById(reviewId);
-
-      if (result.is_ok())
-        return res.render('reviews/details', {
-          review: result.unwrap(),
-        });
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      res.redirect('/reviews');
-    }
+      const resultReview = await this.reviewsService.findById(reviewId);
+      return resultReview.is_ok() ?
+        res.render('reviews/details', { review: resultReview.unwrap() }) :
+        res.status(404).json({statusCode: 404, message: resultReview.unwrap_err() });
   }
 
   @Get('/edit/:id')
   async getEditReview(@Res() res: Response, @Param('id') reviewId: string ) {
-    try {
-      const result = await this.reviewsService.findById(reviewId);
-
-      if (result.is_ok())
-        return res.render('reviews/edit', {
-          review: result.unwrap(),
-        });
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      res.redirect('/reviews');
-    }
+      const resultReview = await this.reviewsService.findById(reviewId);
+      return resultReview.is_ok() ?
+        res.render('reviews/edit', { review: resultReview.unwrap() }) :
+        res.send('404: File Not Found'); // unwrap err
   }
 
   @Post('/edit/:id')
   async editReview(@Res() res: Response, @Param('id') reviewId: string, @Body() editReviewCommand: EditReviewCommand) {
-    try {
-      const result = await this.reviewsService.findByIdAndUpdate(reviewId, editReviewCommand);
-
-      if (result.is_ok())
-        return res.redirect('/reviews/');
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      throw err;
-    }
+      const resultUpdate = await this.reviewsService.findByIdAndUpdate(reviewId, editReviewCommand);
+      return resultUpdate.is_ok() ?
+        res.redirect('/reviews/') :
+        res.send('404: File Not Found');
   }
 
   @Post('/delete/:id')
   async deleteReview(@Res() res: Response, @Param('id') reviewId: string) {
-    try {
-      const result = await this.reviewsService.remove(reviewId);
-
-      if (result.is_ok())
-        return res.redirect('/reviews/');
-      if (result.is_err())
-        return res.send('404: File Not Found');
-
-    } catch (err) {
-      res.redirect('/');
-    }
+      const resultRemove = await this.reviewsService.remove(reviewId);
+      return resultRemove.is_ok() ?
+        res.redirect('/reviews/') :
+        res.send('404: File Not Found'); // unwrap err
   }
-
 }
