@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Res, Req, Next } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 import { UserService } from './user.service';
 

@@ -26,19 +26,31 @@ export class GoogleStrategy extends OAuth2Strategy {
     passport.use(this);
 
     passport.serializeUser((user: any, done) => {
-      done(null, user.id);
-    });
-
-    passport.deserializeUser(async (id, done) => {
       try {
-        const user = await userService.findById(id);
-        if (user) {
-          return done(null, user);
-        }
+        return done(null, user);
       } catch {
         return done(null, false);
       }
     });
+
+    passport.deserializeUser((user: any, done) => {
+      try {
+        return done(null, user);
+      } catch {
+        return done(null, false);
+      }
+    });
+
+    // passport.deserializeUser(async (id, done) => {
+    //   try {
+    //     const user = await userService.findById(id);
+    //     if (user) {
+    //       return done(null, user);
+    //     }
+    //   } catch {
+    //     return done(null, false);
+    //   }
+    // });
   }
 
   async logIn(profile, accessToken, done) {

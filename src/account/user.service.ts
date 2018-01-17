@@ -29,7 +29,6 @@ export class UserService {
 
   async findById(id: string): Promise<User> {
     try {
-      console.log(id);
       const user = await this.userModel.findOne(id);
       return user;
     } catch (err) {

@@ -22,19 +22,23 @@ export class LocalRegisterStrategy extends Strategy {
     passport.use('local-register', this);
 
     passport.serializeUser((user: any, done) => {
-      return done(null, user.id);
+      return done(null, user);
     });
 
-    passport.deserializeUser(async (id, done) => {
-      try {
-        const user = await userService.findById(id);
-        if (user) {
-          return done(null, user);
-        }
-      } catch {
-        return done(null, false);
-      }
+    passport.deserializeUser((user: any, done) => {
+      return done(null, user);
     });
+
+    // passport.deserializeUser(async (id, done) => {
+    //   try {
+    //     const user = await userService.findById(id);
+    //     if (user) {
+    //       return done(null, user);
+    //     }
+    //   } catch {
+    //     return done(null, false);
+    //   }
+    // });
 
   }
 
