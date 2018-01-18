@@ -1,5 +1,7 @@
 import { Document, Schema, Error, Model, model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
+import * as Bluebird from 'bluebird';
+import * as _bcrypt from 'bcrypt';
+const bcrypt = Bluebird.promisifyAll(_bcrypt);
 
 export const UserSchema = new Schema({
   email: { type: String, unique: true },
@@ -19,12 +21,6 @@ UserSchema.pre('save', async function save(next) {
   }
 });
 
-UserSchema.methods.comparePassword = async (candidatePassword: string) => {
-  try {
-    const hashedPassword = await bcrypt.compare(candidatePassword, this.password);
-    return hashedPassword;
-  }
-  catch (err) {
-    throw err;
-  }
+UserSchema.methods.comparePassword = async function comparePassword(candidatePassword: string) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };

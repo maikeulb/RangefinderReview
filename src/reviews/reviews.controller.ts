@@ -11,14 +11,13 @@ import { EditReviewCommand} from './commands/editReview.command';
 // import { LocalStrategyInfo } from "passport-local";
 // import { WriteError } from "mongodb";
 // const request = require("express-validator");
-// nestjs authorized, onundefined, currentuser
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get('/')
-  async getIndex(@Req() req: Request, @Res() res: Response) {
+  async getIndex(@Res() res: Response) {
     const optionReviews = await this.reviewsService.findAll();
     return optionReviews.is_some() ?
       res.render('reviews/index', { reviews: optionReviews.unwrap() }) :
@@ -26,7 +25,7 @@ export class ReviewsController {
   }
 
   @Get('/create')
-  getCreateReview(@Req() req: Request, @Res() res: Response) {
+  getCreateReview(@Res() res: Response) {
     return res.render('reviews/create');
   }
 
@@ -35,7 +34,7 @@ export class ReviewsController {
     const resultCreate = await this.reviewsService.create(createReviewCommand);
     return resultCreate.is_ok() ?
       res.redirect('/reviews') :
-      res.status(404).json({statusCode: 404, message: resultCreate.unwrap_err() });
+      res.status(500).json({statusCode: 500, message: resultCreate.unwrap_err() });
   }
 
   @Get('/details/:id')
@@ -47,19 +46,19 @@ export class ReviewsController {
   }
 
   @Get('/edit/:id')
-  async getEditReview(@Res() res: Response, @Param('id') reviewId: string ) {
-      const resultReview = await this.reviewsService.findById(reviewId);
-      return resultReview.is_ok() ?
-        res.render('reviews/edit', { review: resultReview.unwrap() }) :
-        res.send('404: File Not Found'); // unwrap err
+  async getEditReview(@Res() res: Response, @Param('id') reviewId: string) {
+    const resultReview = await this.reviewsService.findById(reviewId);
+    return resultReview.is_ok() ?
+      res.render('reviews/edit', { review: resultReview.unwrap() }) :
+      res.status(404).json({statusCode: 404, message: resultReview.unwrap_err() });
   }
 
-  @Post('/edit/:id')
+  @Post('/:id')
   async editReview(@Res() res: Response, @Param('id') reviewId: string, @Body() editReviewCommand: EditReviewCommand) {
     const resultUpdate = await this.reviewsService.findByIdAndUpdate(reviewId, editReviewCommand);
     return resultUpdate.is_ok() ?
-      res.redirect('/reviews/') :
-      res.send('404: File Not Found');
+      res.redirect('/reviews/details/' + reviewId) :
+      res.status(500).json({statusCode: 500, message: resultUpdate.unwrap_err() });
   }
 
   @Post('/delete/:id')
@@ -67,6 +66,6 @@ export class ReviewsController {
     const resultRemove = await this.reviewsService.remove(reviewId);
     return resultRemove.is_ok() ?
       res.redirect('/reviews/') :
-      res.send('404: File Not Found'); // unwrap err
+      res.status(500).json({statusCode: 500, message: resultRemove.unwrap_err() });
   }
 }

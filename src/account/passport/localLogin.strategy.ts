@@ -30,17 +30,6 @@ export class LocalLoginStrategy extends Strategy {
     });
   }
 
-    // passport.deserializeUser(async (id, done) => {
-    //   try {
-    //     // const user = await userService.findById(id);
-    //     // if (user) {
-    //       // return done(null, user);
-    //     // }
-    //   } catch {
-    //     return done(null, false);
-    //   }
-    // });
-
   async logIn(email, password, done) {
     try {
       const existUser = await this.userService.findByEmail(email);
@@ -48,7 +37,7 @@ export class LocalLoginStrategy extends Strategy {
         return done('invalid username', false);
       }
 
-      const isMatch: boolean = existUser.comparePassword(password);
+      const isMatch: boolean = await existUser.comparePassword(password);
       if (!isMatch) {
         return done ('invalid password', false);
       }

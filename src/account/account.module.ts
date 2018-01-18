@@ -33,6 +33,19 @@ export class AccountModule implements NestModule {
   public configure(consumer: MiddlewaresConsumer) {
     consumer
 
+       // local login-login
+      .apply(passport.authenticate('local-login', {
+        successRedirect: '/account/callback',
+        failureRedirect: '/error',
+      }))
+      .forRoutes({ path: '/account/login', method: RequestMethod.POST })
+       // local login-register
+      .apply(passport.authenticate('local-register', {
+        successRedirect: '/',
+        failureRedirect: '/error',
+      }))
+      .forRoutes({ path: '/account/register', method: RequestMethod.POST })
+
      // google Login
      .apply(passport.authenticate('google', {
         scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
@@ -40,14 +53,7 @@ export class AccountModule implements NestModule {
       .forRoutes({ path: '/account/google', method: RequestMethod.GET })
       // google CallBack URL
       .apply(passport.authenticate('google', {
-        successRedirect: '/',
-        failureRedirect: '/error',
-      }))
-      .forRoutes({ path: '/account/google/callback', method: RequestMethod.GET })
-
-      // google CallBack URL
-      .apply(passport.authorize('google', {
-        successRedirect: '/',
+        successRedirect: '/account/callback',
         failureRedirect: '/error',
       }))
       .forRoutes({ path: '/account/google/callback', method: RequestMethod.GET })
@@ -59,23 +65,10 @@ export class AccountModule implements NestModule {
       .forRoutes({ path: '/account/github', method: RequestMethod.ALL })
       // github callback
       .apply(passport.authenticate('github', {
-        successRedirect: '/',
-        failureRedirect: '/error',
-      }))
-      .forRoutes({ path: '/account/github/callback', method: RequestMethod.ALL })
-
-       // local login-login
-      .apply(passport.authenticate('local-login', {
         successRedirect: '/account/callback',
         failureRedirect: '/error',
       }))
-      .forRoutes({ path: '/account/login', method: RequestMethod.POST })
+      .forRoutes({ path: '/account/github/callback', method: RequestMethod.ALL });
 
-       // local login-register
-      .apply(passport.authenticate('local-register', {
-        successRedirect: '/',
-        failureRedirect: '/error',
-      }))
-      .forRoutes({ path: '/account/register', method: RequestMethod.POST });
   }
 }

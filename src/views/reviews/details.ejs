@@ -45,15 +45,15 @@
 
             <div class="pull-right">
 
-              <form class="edit-form" action="/comments/edit/<%= comment._id %>" method="POST">
-	        <input type="hidden" name="reviewId" value="<%= review._id %>">
+              <form class="edit-form" action="/comments/edit/<%= review._id %>" method="POST">
 	        <input type="hidden" name="commentId" value="<%= comment._id %>">
 	        <input type="hidden" name="comment" value="<%= comment.comment %>">
                 <button class="btn btn-xs btn-danger">EDIT</button>
               </form>
 
-              <form class="delete-form" action="/comments/delete/<%=comment._id%>" method="POST">
-                <input type="hidden" name="review_id" value="<%= review._id %>">
+              <form class="delete-form" action="/comments/delete/<%=review._id%>" method="POST">
+                <input type="hidden" name="commentId" value="<%= comment._id %>">
+                <input type="hidden" name="reviewId" value="<%= review._id %>">
                 <button class="btn btn-xs btn-danger">DELETE</button>
               </form>
 

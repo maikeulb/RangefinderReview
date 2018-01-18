@@ -24,13 +24,11 @@ export class CommentsService {
 
   async findByIdAndUpdate(command: EditCommentCommand): Promise<Result<Comment, string>> {
     try {
-      const updatedComment = await this.commentModel.findByIdAndUpdate(
+      return Ok(await this.commentModel.findByIdAndUpdate(
         command.commentId,
         { $set: { comment : command.comment } },
-        { upsert: true }
-      );
-      console.log(updatedComment);
-      return Ok(updatedComment);
+        { upsert: true },
+        ));
     } catch (err) {
       return Err('could not update'); // log mongo err
     }

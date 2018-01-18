@@ -7,6 +7,7 @@ import { ReviewSchema } from '../../models//schemas/review.schema';
 
 import { CreateReviewCommand } from '../../reviews/commands/createReview.command';
 import { EditReviewCommand } from '../../reviews/commands/editReview.command';
+import { RemoveCommentCommand } from '../../comments/commands/removeComment.command';
 
 import { Result, Ok, Err } from '@threestup/monads';
 import { Option, Some, None } from '@threestup/monads';
@@ -62,6 +63,17 @@ export class ReviewsService {
       );
     } catch (err) {
       return Err('could not remove'); // log mongo err
+    }
+  }
+
+  async removeComment(command: RemoveCommentCommand): Promise<Result<Review, string>> {
+    try {
+      return Ok(await this.reviewModel.findByIdAndUpdate(
+        command.reviewId,
+        { $pull: { comments : command.commentId } },
+        ));
+    } catch (err) {
+      return Err('could not remove');
     }
   }
 }

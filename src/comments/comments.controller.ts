@@ -8,8 +8,9 @@ import { Comment } from '../models/interfaces/comment.interface';
 
 import { CreateCommentCommand} from './commands/createComment.command';
 import { EditCommentCommand} from './commands/editComment.command';
+import { RemoveCommentCommand} from './commands/removeComment.command';
 
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 @Controller('comments')
 export class CommentsController {
@@ -28,12 +29,12 @@ export class CommentsController {
   @Post('/new/:id')
   async createNew(@Req() req: Request, @Res() res: Response, @Param('id') reviewId: string, @Body() createCommentCommand: CreateCommentCommand) {
 
-    const reviewResult = await this.reviewsService.findById(reviewId);
-    const commentResult = await this.commentsService.create(createCommentCommand);
+    const resultReview = await this.reviewsService.findById(reviewId);
+    const resultComment = await this.commentsService.create(createCommentCommand);
 
-    if (reviewResult.is_ok() && commentResult.is_ok()) {
-      const review = reviewResult.unwrap();
-      const comment = commentResult.unwrap();
+    if (resultReview.is_ok() && resultComment.is_ok()) {
+      const review = resultReview.unwrap();
+      const comment = resultComment.unwrap();
       comment.author.username = req.user.username;
       comment.author.id = req.user._id;
       await comment.save();
@@ -41,69 +42,33 @@ export class CommentsController {
       await review.save();
       return res.redirect('/reviews/details/' + review._id);
     } else {
-      return res.send('404: File Not Found');
+      res.status(500).json({statusCode: 500, message: resultReview.unwrap_err() });
     }
   }
 
   @Post('/edit/:id')
-  async getEditComment(@Req() req: Request, @Res() res: Response, @Body() body, @Param() param) {
-    try {
-      console.log(body);
-      console.log(body.reviewId); // move to params
-      console.log(body.comment);
-      res.render('comments/edit', {
-        reviewId: body.reviewId,
-        commentId: body.commentId,
-        comment: body.comment,
-      });
-    } catch (err) {
-      throw err;
-    }
+  getEditComment(@Res() res: Response, @Param('id') reviewId: string, @Body() body) {
+    res.render('comments/edit', {
+      reviewId,
+      commentId: body.commentId,
+      comment: body.comment,
+    });
   }
 
   @Post('/:id')
   async editComment(@Res() res: Response, @Param('id') reviewId: string, @Body() editCommentCommand: EditCommentCommand) {
-    try {
-      console.log(editCommentCommand);
-      await this.commentsService.findByIdAndUpdate(editCommentCommand);
-      res.redirect('/reviews/details/' + reviewId);
-    } catch (err) {
-      throw err;
-    }
+    const resultUpdate = await this.commentsService.findByIdAndUpdate(editCommentCommand); //use reviewId
+    return resultUpdate.is_ok() ?
+      res.redirect('/reviews/details/' + reviewId) :
+      res.status(500).json({statusCode: 500, message: resultUpdate.unwrap_err() });
   }
 
-  // @Post('/delete/:id')
-  // async deleteReview(@Res() res, @Param() params) {
-  //   try {
-  //     await this.reviewsService.remove(params.id);
-  //     res.redirect('/reviews/');
-  //   } catch (err) {
-  //     res.redirect('/');
-  //   }
-  // }
-
-// router.delete("/:commentId", isLoggedIn, checkUserComment, function(req, res){
-//   // find campground, remove comment from comments array, delete comment in db
-//   Campground.findByIdAndUpdate(req.params.id, {
-//     $pull: {
-//       comments: req.comment.id
-//     }
-//   }, function(err) {
-//     if(err){ 
-//         console.log(err)
-//         req.flash('error', err.message);
-//         res.redirect('/');
-//     } else {
-//         req.comment.remove(function(err) {
-//           if(err) {
-//             req.flash('error', err.message);
-//             return res.redirect('/');
-//           }
-//           req.flash('error', 'Comment deleted!');
-//           res.redirect("/campgrounds/" + req.params.id);
-//         });
-//     }
-//   });
-// });
+  @Post('delete/:id')
+  async deleteComment(@Res() res: Response, @Param('id') reviewId: string, @Body() removeCommentCommand: RemoveCommentCommand) {
+    const resultRemove = await this.reviewsService.removeComment(removeCommentCommand);
+    return resultRemove.is_ok() ?
+      res.redirect('/reviews/details/' + reviewId) :
+      res.status(500).json({statusCode: 500, message: resultRemove.unwrap_err() });
+  }
 
 }

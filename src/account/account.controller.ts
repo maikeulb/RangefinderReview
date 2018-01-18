@@ -7,6 +7,7 @@ import { UserService } from './user.service';
 export class AccountController {
   constructor(private readonly userService: UserService) {}
 
+  // local login
   @Get('login')
   getLogin( @Req() req: Request, @Res() res: Response ): void {
     res.render('account/login', {
@@ -15,13 +16,19 @@ export class AccountController {
   }
 
   @Post('login')
-  async postLogin( @Req() req: Request, @Res() res: Response ) : Promise<void>{ }
+  async postLogin( @Req() req: Request, @Res() res: Response ): Promise<void>{ }
 
   @Get('/callback')
   callback(@Req() req: Request, @Res() res: Response): void {
-    res.redirect(req.session.returnTo || '/');
+    try {
+      console.log(req.session);
+      res.redirect(req.session.returnTo || '/');
+    } catch (err) {
+      throw err;
+    }
   }
 
+  // local register
   @Get('register')
   getRegister( @Req() req: Request, @Res() res: Response ): void {
     res.render('account/register', {
