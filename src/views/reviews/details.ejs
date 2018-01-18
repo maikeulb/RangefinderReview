@@ -41,7 +41,7 @@
           <span class="pull-right"><%= comment.createdAt %></span>
           <div>
            <%= comment.comment%> 
-           <% if(user && comment.author.id.equals(user._id)){ %>
+           <% if(user) { %>
 
             <div class="pull-right">
 

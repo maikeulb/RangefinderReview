@@ -11,7 +11,6 @@
           <li><a href="/account/login">Login</a></li>
           <li><a href="/account/register">Register</a></li>
         <% } else { %>
-	<%= console.log(user) %>
 	  <li><a href="#">Hello <%= user.displayName || user.email || user.username  %></a></li>
           <li><a href="/account/logout">Logout</a></li>
         <% } %>

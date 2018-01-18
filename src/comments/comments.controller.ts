@@ -18,29 +18,31 @@ export class CommentsController {
   ) {}
 
   @Get('/new/:id')
-  async getCreateNew(@Res() res: Response, @Param() reviewId: string) {
-      const resultReview = await this.reviewsService.findById(reviewId);
-      return resultReview.is_ok() ?
-        res.render('comments/new', { review: resultReview.unwrap() }) :
-        res.send('404: File Not Found');
+  async getCreateNew(@Res() res: Response, @Param('id') reviewId: string) {
+    const resultReview = await this.reviewsService.findById(reviewId);
+    return resultReview.is_ok() ?
+      res.render('comments/new', { review: resultReview.unwrap() }) :
+      res.status(404).json({statusCode: 404, message: resultReview.unwrap_err() });
   }
 
   @Post('/new/:id')
-  async createNew(@Req() req: Request, @Res() res: Response, @Param() reviewId: string, @Body() createCommentCommand: CreateCommentCommand) {
-      const reviewResult = await this.reviewsService.findById(reviewId);
-      const commentResult = await this.commentsService.create(createCommentCommand);
-      if (reviewResult.is_ok() && commentResult.is_ok()) {
-        const review = reviewResult.unwrap();
-        const comment = commentResult.unwrap();
-        comment.author.username = req.user.username;
-        comment.author.id = req.user._id;
-        await comment.save();
-        review.comments = review.comments.concat([comment]);
-        await review.save();
-        return res.redirect('/reviews/details/' + review._id);
-      } else {
-        return res.send('404: File Not Found');
-      }
+  async createNew(@Req() req: Request, @Res() res: Response, @Param('id') reviewId: string, @Body() createCommentCommand: CreateCommentCommand) {
+
+    const reviewResult = await this.reviewsService.findById(reviewId);
+    const commentResult = await this.commentsService.create(createCommentCommand);
+
+    if (reviewResult.is_ok() && commentResult.is_ok()) {
+      const review = reviewResult.unwrap();
+      const comment = commentResult.unwrap();
+      comment.author.username = req.user.username;
+      comment.author.id = req.user._id;
+      await comment.save();
+      review.comments = review.comments.concat([comment]);
+      await review.save();
+      return res.redirect('/reviews/details/' + review._id);
+    } else {
+      return res.send('404: File Not Found');
+    }
   }
 
   // @Post('/edit/:id')

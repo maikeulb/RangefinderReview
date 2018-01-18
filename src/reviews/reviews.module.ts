@@ -16,11 +16,11 @@ import { EnsureLoggedInMiddleware } from '../common/middlewares/ensureLoggedIn.m
   components: [ReviewsService],
 })
 
-export class ReviewsModule { }
-// export class ReviewsModule implements NestModule {
-  // public configure(consumer: MiddlewaresConsumer) {
-    // consumer
-      // .apply(EnsureLoggedInMiddleware)
-      // .forRoutes(ReviewsController);
-  // }
-// }
+// export class ReviewsModule { }
+export class ReviewsModule implements NestModule {
+  public configure(consumer: MiddlewaresConsumer) {
+    consumer
+      .apply(EnsureLoggedInMiddleware)
+      .forRoutes(ReviewsController);
+  }
+}
