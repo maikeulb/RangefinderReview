@@ -4,10 +4,6 @@ import * as bcrypt from 'bcrypt';
 export const UserSchema = new Schema({
   email: { type: String, unique: true },
   password: String,
-
-  google: { type: Object },
-  github: { type: Object },
-
 }, { timestamps: true });
 
 UserSchema.pre('save', async function save(next) {

@@ -25,51 +25,30 @@ export class GoogleStrategy extends OAuth2Strategy {
 
     passport.use(this);
 
-    passport.serializeUser((user: any, done) => {
-      try {
-        return done(null, user);
-      } catch {
-        return done(null, false);
-      }
+    passport.serializeUser<any, any>((user, done) => {
+      return done(null, user);
     });
 
-    passport.deserializeUser((user: any, done) => {
-      try {
-        return done(null, user);
-      } catch {
-        return done(null, false);
-      }
+    passport.deserializeUser((user, done) => {
+      return user ?
+        done(null, user) :
+        done(null, false);
     });
 
-    // passport.deserializeUser(async (id, done) => {
-    //   try {
-    //     const user = await userService.findById(id);
-    //     if (user) {
-    //       return done(null, user);
-    //     }
-    //   } catch {
-    //     return done(null, false);
-    //   }
-    // });
   }
 
-  async logIn(profile, accessToken, done) {
+  async logIn(accessToken, profile, done) {
     try {
-      const existUser = await this.userService.findById(profile.id);
-      if (existUser) {
-        return done(null, existUser);
-      }
-      if (!existUser) {
-        const googleUser = new CreateGoogleUserCommand();
-        googleUser.displayName = profile.displayName;
-        googleUser.email = profile.emails[0].value;
-        googleUser.googleAccount = {
-          googleId: profile.id,
-          googleToken: accessToken,
-        };
-        const newUser = await this.userService.createGoogleUser(googleUser);
-        return done(null, newUser); }
+      const user = new CreateGoogleUserCommand();
+      user.displayName = profile.displayName;
+      user.googleAccount = {
+        googleId: profile.id,
+        googleToken: accessToken,
+      };
+
+        return done(null, user);
     } catch (err) {
+      console.log(err);
       done('there was a problem logging in', false );
     }
   }

@@ -19,13 +19,16 @@ export class LocalLoginStrategy extends Strategy {
 
     passport.use('local-login', this);
 
-    passport.serializeUser((user: any, done) => {
+    passport.serializeUser<any, any>((user, done) => {
       return done(null, user);
     });
 
-    passport.serializeUser((user: any, done) => {
-      return done(null, user);
+    passport.deserializeUser((user, done) => {
+      return user ?
+        done(null, user) :
+        done(null, false);
     });
+  }
 
     // passport.deserializeUser(async (id, done) => {
     //   try {
@@ -37,7 +40,6 @@ export class LocalLoginStrategy extends Strategy {
     //     return done(null, false);
     //   }
     // });
-  }
 
   async logIn(email, password, done) {
     try {

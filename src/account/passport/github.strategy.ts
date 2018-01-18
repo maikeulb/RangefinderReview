@@ -19,7 +19,7 @@ export class GithubStrategy extends Strategy {
       clientID: secretKey.getGithubKeys().clientID,
       clientSecret: secretKey.getGithubKeys().clientSecret,
       callbackURL: 'http://localhost:3000/account/github/callback',
-      scope: ['displayName', 'emails'],
+      scope: ['login', 'emails'],
     }, async (accessToken, tokenSecret, profile, done) => {
       await this.logIn(accessToken, profile, done);
     },
@@ -27,52 +27,29 @@ export class GithubStrategy extends Strategy {
 
     passport.use(this);
 
-    passport.serializeUser((user: any, done) => {
+    passport.serializeUser<any, any>((user, done) => {
       return done(null, user);
     });
 
-    passport.deserializeUser((user: any, done) => {
-      try {
-        return done(null, user);
-      } catch {
-        return done(null, false);
-      }
+    passport.deserializeUser((user, done) => {
+      return user ?
+        done(null, user) :
+        done(null, false);
     });
-
-    // passport.deserializeUser(async (id, done) => {
-    //   try {
-    //     const user = await userService.findById(id);
-    //     if (user) {
-    //       return done(null, user);
-    //     }
-    //   } catch {
-    //     return done(null, false);
-    //   }
-    // });
-
   }
 
-  async logIn(profile, accessToken, done) {
+  async logIn(accessToken, profile, done) {
     try {
-      const existUser = await this.userService.findById(profile.id);
-      if (existUser) {
-        return done(null, existUser);
-      }
-
-      if (!existUser) {
-
-        const githubUser = new CreateGithubUserCommand();
-        githubUser.displayName = profile.displayName;
-        githubUser.githubAccount = {
-          githubId: profile.id,
-          githubToken: accessToken,
-        };
-
-        const newUser = await this.userService.createGithubUser(githubUser);
-        return done(null, newUser);
-      }
-
+      const user = new CreateGithubUserCommand();
+      user.displayName = profile.displayName;
+      user.username = profile.username;
+      user.githubAccount = {
+        githubId: profile.id,
+        githubToken: accessToken,
+      };
+      return done(null, user);
     } catch (err) {
+      console.log(err);
       done('there was a problem logging in', false );
     }
   }
