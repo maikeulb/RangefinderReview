@@ -14,5 +14,10 @@ export const ReviewSchema = new Schema({
       username: String
   },
 
-  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+  comments: [
+    { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Comment' 
+    }
+  ]
 });

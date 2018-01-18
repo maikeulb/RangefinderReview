@@ -46,8 +46,8 @@
             <div class="pull-right">
 
               <form class="edit-form" action="/comments/edit/<%= comment._id %>" method="POST">
-	        <input type="hidden" name="review_id" value="<%= review._id %>">
-	        <input type="hidden" name="comment_id" value="<%= comment._id %>">
+	        <input type="hidden" name="reviewId" value="<%= review._id %>">
+	        <input type="hidden" name="commentId" value="<%= comment._id %>">
 	        <input type="hidden" name="comment" value="<%= comment.comment %>">
                 <button class="btn btn-xs btn-danger">EDIT</button>
               </form>

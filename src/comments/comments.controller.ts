@@ -45,32 +45,32 @@ export class CommentsController {
     }
   }
 
-  // @Post('/edit/:id')
-  // async getEditComment(@Req() req: Request, @Res() res: Response, @Body() body, @Param() params) {
-  //   try {
-  //     console.log(body);
-  //     console.log(req.body.review_id);
-  //     console.log(req.body.comment);
-  //     res.render('comments/edit', {
-  //       review: req.body.review,
-  //       review_id: req.body.review_id,
-  //       comment_id: req.body.comment_id,
-  //       comment: req.body.comment,
-  //     });
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // }
+  @Post('/edit/:id')
+  async getEditComment(@Req() req: Request, @Res() res: Response, @Body() body, @Param() param) {
+    try {
+      console.log(body);
+      console.log(body.reviewId); // move to params
+      console.log(body.comment);
+      res.render('comments/edit', {
+        reviewId: body.reviewId,
+        commentId: body.commentId,
+        comment: body.comment,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
 
-  // @Post('/:id')
-  // async editComment(@Res() res: Response, @Param() reviewId: string, @Body() editCommentCommand: EditCommentCommand) {
-  //   try {
-  //     await this.commentsService.findByIdAndUpdate(reviewId, editCommentCommand);
-  //     res.redirect('/reviews/details/' + params.id);
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // }
+  @Post('/:id')
+  async editComment(@Res() res: Response, @Param('id') reviewId: string, @Body() editCommentCommand: EditCommentCommand) {
+    try {
+      console.log(editCommentCommand);
+      await this.commentsService.findByIdAndUpdate(editCommentCommand);
+      res.redirect('/reviews/details/' + reviewId);
+    } catch (err) {
+      throw err;
+    }
+  }
 
   // @Post('/delete/:id')
   // async deleteReview(@Res() res, @Param() params) {
