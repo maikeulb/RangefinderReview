@@ -7,7 +7,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
 module.exports = {
-  context: __dirname + '/ClientApp',
+  context: __dirname + '/assets',
   devtool: 'eval-source-map',
   entry: {
     main: './main.js'
