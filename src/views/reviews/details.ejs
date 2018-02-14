@@ -22,42 +22,12 @@
           <a class="btn btn-success" href="/comments/new/<%= review._id %>"> Add New Comment</a>
         </div>
       </div>
-
     <% } %>
 
       <hr>
-
       <% review.comments.forEach(function(comment){ %>
-      <div class="row">
-        <div class="col-md-12">
-          <strong><%= comment.author.username %></strong>
-          <div>
-           <%= comment.comment%> 
-           <% if(user) { %>
-            <div class="pull-right">
-            <div style="display:flex">
-              <form class="edit-form" action="/comments/edit/<%= review._id %>" method="POST">
-	        <input type="hidden" name="commentId" value="<%= comment._id %>">
-	        <input type="hidden" name="comment" value="<%= comment.comment %>">
-                <button class="btn waves-effect waves-light">EDIT</button>
-              </form>
-
-              <form class="delete-form" action="/comments/delete/<%=review._id%>" method="POST">
-                <input type="hidden" name="commentId" value="<%= comment._id %>">
-                <input type="hidden" name="reviewId" value="<%= review._id %>">
-                <button class="btn waves-effect waves-light">DELETE</button>
-              </form>
-            </div>
-            </div>
-
-           <% } %>
-          </div>
-        </div>
-        <br>
-        <hr>
-      </div>
+         <% include _comments %>
       <% }) %>
-
   </div>
   </div>
 </div>

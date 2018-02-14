@@ -11,23 +11,7 @@
 
       <div class="row" id="rangefinders-grid">
         <% reviews.forEach(function(review){ %>
-          <div class="col s12 m6 l3">
-            <div class="card">
-              <div class="card-image">
-                <img src="<%= review.imageUrl %>">
-              </div>
-	      <div class="card-content" 
-		style="padding:4px; padding-left:24px;">
-	        <span class="card-title" 
-		  style="margin:0; font-size:18px; text-transform: uppercase; font-weight:400;"> 
-		<%=review.name%>  
-		</span>
-              </div>
-              <div class="card-action">
-                <a href="/reviews/details/<%= review._id %>">Read Review</a>
-              </div>
-            </div>
-          </div>
+         <% include _reviews %>
         <% }); %>
       </div>
 
