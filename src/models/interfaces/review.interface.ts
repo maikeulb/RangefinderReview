@@ -7,4 +7,5 @@ export interface Review extends Document {
   createdAt: Date,
   author: any,
   comments: any,
+  likes: any,
 }

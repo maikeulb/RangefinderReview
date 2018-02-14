@@ -2,6 +2,7 @@
 
   <div class="col-md-12">
     <strong><%= comment.author.username %></strong>
+    <span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>
     <div>
       <%= comment.comment%> 
       <% if(user) { %>

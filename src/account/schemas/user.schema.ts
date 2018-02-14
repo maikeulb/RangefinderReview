@@ -4,7 +4,10 @@ import * as _bcrypt from 'bcrypt';
 const bcrypt = Bluebird.promisifyAll(_bcrypt);
 
 export const UserSchema = new Schema({
-  email: { type: String, unique: true },
+  email: { 
+    type: String, 
+    unique: true 
+  },
   password: String,
 }, { timestamps: true });
 

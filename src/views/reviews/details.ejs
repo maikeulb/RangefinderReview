@@ -8,7 +8,8 @@
     </div>
     <div class="caption-full">
       <p><%= review.description %></p>
-      <p><em>Submitted by: <%= review.author.username %>, <%= review.createdAt %></em></p>
+      <p><em>Submitted by: <%= review.author.username %>, <%=
+	moment(review.createdAt).fromNow() %></em></p>
     </div>
 
     <% if(user){ %>

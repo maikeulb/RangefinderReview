@@ -49,7 +49,6 @@ export class GithubStrategy extends Strategy {
       };
       return done(null, user);
     } catch (err) {
-      console.log(err);
       done('there was a problem logging in', false );
     }
   }

@@ -21,7 +21,6 @@ export class AccountController {
   @Get('/callback')
   callback(@Req() req: Request, @Res() res: Response): void {
     try {
-      console.log(req.session);
       res.redirect(req.session.returnTo || '/');
     } catch (err) {
       throw err;

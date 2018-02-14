@@ -4,7 +4,6 @@ export const ReviewSchema = new Schema({
   name: String,
   imageUrl: String,
   description: String,
-  createdAt: { type: Date, default: Date.now },
 
   author: {
       id: {
@@ -19,5 +18,10 @@ export const ReviewSchema = new Schema({
       type: Schema.Types.ObjectId, 
       ref: 'Comment' 
     }
-  ]
+  ],
+
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  },
 });

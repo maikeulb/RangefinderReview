@@ -23,6 +23,7 @@ expressApp.use(expressSession({
 expressApp.use(passport.initialize());
 expressApp.use(passport.session());
 expressApp.use(flash());
+expressApp.locals.moment = require('moment');
 expressApp.use((req, res, next) => {
   res.locals.user = req.user;
   next();
