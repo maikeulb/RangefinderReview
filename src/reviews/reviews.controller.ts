@@ -8,10 +8,6 @@ import { Review } from '../models/interfaces/review.interface';
 import { CreateReviewCommand} from './commands/createReview.command';
 import { EditReviewCommand} from './commands/editReview.command';
 
-// import { LocalStrategyInfo } from "passport-local";
-// import { WriteError } from "mongodb";
-// const request = require("express-validator");
-
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
@@ -21,7 +17,7 @@ export class ReviewsController {
     const optionReviews = await this.reviewsService.findAll();
     return optionReviews.is_some() ?
       res.render('reviews/index', { reviews: optionReviews.unwrap() }) :
-      res.send('Need reviews!'); // render review page
+      res.send('Need reviews!');
   }
 
   @Get('/create')
@@ -30,7 +26,11 @@ export class ReviewsController {
   }
 
   @Post('/create')
-  async createReview(@Res() res: Response, @Body() createReviewCommand: CreateReviewCommand) {
+  async createReview(@Res() res: Response, @Req() req: Request, @Body() createReviewCommand: CreateReviewCommand) { // 
+    createReviewCommand.author = {
+      id : req.user._id,
+      username : req.user.username
+    }
     const resultCreate = await this.reviewsService.create(createReviewCommand);
     return resultCreate.is_ok() ?
       res.redirect('/reviews') :

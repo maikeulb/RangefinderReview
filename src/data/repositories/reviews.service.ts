@@ -40,7 +40,7 @@ export class ReviewsService {
   async create(command: CreateReviewCommand): Promise<Result<Review, string>> {
     try {
       const resultCreate = new this.reviewModel(command);
-      await resultCreate.save(); // remove
+      await resultCreate.save();
       return Ok(resultCreate);
     } catch (err) {
       return Err('could not update'); // log mongo err

@@ -30,7 +30,7 @@ export class CommentsService {
         { upsert: true },
         ));
     } catch (err) {
-      return Err('could not update'); // log mongo err
+      return Err('could not update');
     }
   }
 
