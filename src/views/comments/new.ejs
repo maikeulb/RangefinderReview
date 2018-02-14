@@ -1,14 +1,23 @@
-<div class="row">
-  <h1 style="text-align: center">Add New Comment to <%= review.name %></h1>
-  <div style="width: 30%; margin: 25px auto;">
-    <form action="/comments/new/<%= review._id %>" method="POST">
-      <div class="form-group">
-        <input class="form-control" type="text" name="comment" placeholder="text">
+<div class="section">
+  <div class="container row">
+  <h4 style="text-align: center">Add New Comment to <%= review.name %></h4>
+
+  <form class="col s12" action="/comments/new/<%= review._id %>" method="POST">
+
+      <div class="row">
+
+        <div class="input-field col s12">
+          <textarea class="materialize-textarea validate" type="text" name="comment" id="comment"></textarea>
+        </div>
+
+	<div class="input-field col s12">
+          <button class="waves-effect waves-light btn red lighten-2" type="submit">Submit!
+            <i class="material-icons right">send</i>
+	  </button>
+        </div>
+
       </div>
-      <div class="form-group">
-        <button class="btn btn-lg btn-primary btn-block">Submit!</button>
-      </div>
+    <a href="/reviews">Go Back</a>
     </form>
-    <a href="/campgrounds">Go Back</a>
   </div>
 </div>

@@ -1,13 +1,24 @@
-<div class="row">
-  <h1 style="text-align: center">Edit Comment</h1>
-  <div style="width: 30%; margin: 25px auto;">
+<div class="section">
+  <div class="container row">
+  <h4 style="text-align: center">Edit Comment</h4>
 
-    <form class = "edit-form" action="/comments/<%= reviewId %>" method="POST">
-        <input type="hidden" name="commentId" value="<%= commentId %>">
-        <input class="form-control" type="text" value="<%= comment %>" name="comment" placeholder="text">
-        <button class="btn btn-lg btn-primary btn-block">Submit!</button>
-    </form>
+  <form class="col s12" action="/comments/<%= reviewId %>" method="POST">
+      <input type="hidden" name="commentId" value="<%= commentId %>">
 
+      <div class="row">
+
+        <div class="input-field col s12">
+          <textarea class="materialize-textarea validate" type="text" value="<%= comment %>" name="comment" id="comment"></textarea>
+        </div>
+
+	<div class="input-field col s12">
+          <button class="waves-effect waves-light btn red lighten-2" type="submit">Submit!
+            <i class="material-icons right">send</i>
+	  </button>
+        </div>
+
+      </div>
     <a href="/reviews">Go Back</a>
+    </form>
   </div>
 </div>
