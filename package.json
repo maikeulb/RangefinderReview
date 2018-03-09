@@ -61,7 +61,6 @@
     "css-loader": "^0.28.8",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.6",
-    "materialize-css": "^0.100.3",
     "materialize-social": "^1.0.3",
     "method-override": "^2.3.10",
     "node-sass": "^4.7.2",
