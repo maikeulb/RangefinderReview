@@ -7,12 +7,12 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { CommentsModule } from './comments/comments.module';
 
 process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-  // application specific logging, throwing an error, or other logic here
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
 });
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://db/rangefindersreview'), HomeModule, AccountModule, ReviewsModule, CommentsModule ],
+    imports: [MongooseModule.forRoot('mongodb://172.17.0.7/rangefindersreview'), HomeModule, AccountModule, ReviewsModule, CommentsModule],
 })
 
-export class ApplicationModule {}
+export class ApplicationModule { }
