@@ -1,21 +1,23 @@
 Rangefinder Review
 =======
 
-WIP Rangefinder review application where users read, comment, and post rangefinder
-reviews. It's mostly complete but I need to improve the UI and add server side
-validations.
+WIP Rangefinder review application where users read, comment, and post
+rangefinder reviews. It's mostly complete but I need to improve the UI and add
+server side validations. 
 
 Technology
 ----------
 * NEST (built on Express+Typescript)
 * MongoDB
-* WebPack
 * MaterializeCSS
 
 Screenshots
 ---------
 ### Main
 ![main](/screenshots/main.png?raw=true "Main")
+
+### Login (local strategy + social login)
+![login](/screenshots/details.png?raw=true "Details")
 
 ### Reviews
 ![reviews](/screenshots/reviews.png?raw=true "Reviews")
