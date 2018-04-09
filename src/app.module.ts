@@ -12,7 +12,7 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 @Module({
-    imports: [MongooseModule.forRoot('mongodb://172.17.0.7/rangefindersreview'), HomeModule, AccountModule, ReviewsModule, CommentsModule],
+    imports: [MongooseModule.forRoot('mongodb://172.17.0.8/rangefindersreview'), HomeModule, AccountModule, ReviewsModule, CommentsModule],
 })
 
 export class ApplicationModule { }

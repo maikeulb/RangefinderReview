@@ -3,12 +3,15 @@ Rangefinder Review
 
 WIP Rangefinder review application where users read, comment, and post
 rangefinder reviews. It's mostly complete but I need to improve the UI and add
-server side validations. 
+server side validations. The application framework is Nest, which is basically
+Express + Typescript with routed controllers and dependency injection, with
+a structure similar to Angular.
 
 Technology
 ----------
-* NEST (built on Express+Typescript)
+* Nest
 * MongoDB
+* Rellax
 * MaterializeCSS
 
 Screenshots
@@ -16,13 +19,16 @@ Screenshots
 ### Main
 ![main](/screenshots/main.png?raw=true "Main")
 
-### Login (local strategy + social login)
-![login](/screenshots/details.png?raw=true "Details")
+### Login 
+Both local strategy and social strategy logins are supported.
+![login](/screenshots/login.png?raw=true "Details")
 
 ### Reviews
+Contribute to reviews or browse the catalog.
 ![reviews](/screenshots/reviews.png?raw=true "Reviews")
 
 ### Details
+Feel free to comment on any review.
 ![details](/screenshots/details.png?raw=true "Details")
 
 Run
@@ -30,7 +36,7 @@ Run
 Go to `app.module.ts` and point the MongoDB URI to your server and run `npm
 install`.
 
-Then run,
+Then run:
 ```
 npm start
 Go to http://localhost:3000
